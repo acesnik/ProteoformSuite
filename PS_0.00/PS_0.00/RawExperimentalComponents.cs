@@ -15,6 +15,7 @@ using Excel = Microsoft.Office.Interop.Excel; //Right click Solution/Explorer/Re
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Validation;
 
 namespace PS_0._00
 {
@@ -85,7 +86,14 @@ namespace PS_0._00
             foreach (string file in GlobalData.deconResultsFileNames)
             {
                 DataTable dt = new DataTable();
-                dt = ReadExcelFile(file);
+                if (is_excel_file(file))
+                {
+                    dt = ReadExcelFile(file);
+                }
+                else
+                {
+
+                }
                 DataTable dc = dt.Clone();
                 dc.Columns[0].DataType = typeof(int);
                 foreach (DataRow row in dt.Rows)
@@ -113,6 +121,14 @@ namespace PS_0._00
                 ds.Tables.Add(dc);
             }
             return ds;
+        }
+
+        private bool is_excel_file(string file)
+        {
+            SpreadsheetDocument doc = SpreadsheetDocument.Open(file, false);
+            OpenXmlValidator validator = new OpenXmlValidator();
+            List<ValidationErrorInfo> errors = validator.Validate(doc).ToList();
+            return errors.Count == 0;
         }
 
         private DataTable GetRawComponents()
