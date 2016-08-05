@@ -31,7 +31,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dgv_proteoform_families = new System.Windows.Forms.DataGridView();
-            this.pictureBox_familyDisplay = new System.Windows.Forms.PictureBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dgv_proteoform_family_members = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -40,10 +39,8 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_proteoform_families)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_familyDisplay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.SuspendLayout();
@@ -80,10 +77,6 @@
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.Controls.Add(this.dgv_proteoform_families);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.pictureBox_familyDisplay);
             this.splitContainer2.Size = new System.Drawing.Size(953, 347);
             this.splitContainer2.SplitterDistance = 552;
             this.splitContainer2.TabIndex = 5;
@@ -101,15 +94,6 @@
             this.dgv_proteoform_families.TabIndex = 2;
             this.dgv_proteoform_families.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_proteoform_families_CellContentClick);
             this.dgv_proteoform_families.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_proteoform_families_CellMouseClick);
-            // 
-            // pictureBox_familyDisplay
-            // 
-            this.pictureBox_familyDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox_familyDisplay.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox_familyDisplay.Name = "pictureBox_familyDisplay";
-            this.pictureBox_familyDisplay.Size = new System.Drawing.Size(393, 343);
-            this.pictureBox_familyDisplay.TabIndex = 4;
-            this.pictureBox_familyDisplay.TabStop = false;
             // 
             // splitContainer3
             // 
@@ -150,11 +134,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_proteoform_families)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_familyDisplay)).EndInit();
             this.splitContainer3.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
@@ -170,6 +152,5 @@
         private System.Windows.Forms.DataGridView dgv_proteoform_families;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.DataGridView dgv_proteoform_family_members;
-        private System.Windows.Forms.PictureBox pictureBox_familyDisplay;
     }
 }

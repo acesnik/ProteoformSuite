@@ -183,7 +183,7 @@
             // 
             this.proteoformFamilyAssignmentToolStripMenuItem.Name = "proteoformFamilyAssignmentToolStripMenuItem";
             this.proteoformFamilyAssignmentToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
-            this.proteoformFamilyAssignmentToolStripMenuItem.Text = "Proteoform Family Assignment";
+            this.proteoformFamilyAssignmentToolStripMenuItem.Text = "Proteoform Families";
             this.proteoformFamilyAssignmentToolStripMenuItem.Click += new System.EventHandler(this.proteoformFamilyAssignmentToolStripMenuItem_Click);
             // 
             // resultsSummaryToolStripMenuItem
