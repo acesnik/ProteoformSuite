@@ -16,6 +16,8 @@ namespace ProteoformSuite
 { 
     public partial class ExperimentExperimentComparison : Form
     {
+        bool initial_load = true;
+
         public ExperimentExperimentComparison()
         {
             InitializeComponent();
@@ -24,21 +26,43 @@ namespace ProteoformSuite
             this.ct_EE_peakList.MouseClick += new MouseEventHandler(ct_EE_peakList_MouseClick);
             dgv_EE_Peaks.CurrentCellDirtyStateChanged += new EventHandler(peakListSpecificPeakAcceptanceChanged); //makes the change immediate and automatic
             dgv_EE_Peaks.CellValueChanged += new DataGridViewCellEventHandler(propagatePeakListAcceptedPeakChangeToPairsTable); //when 'acceptance' of an ET peak gets changed, we change the ET pairs table.
-            dgv_EE_Peaks.CellValueChanged += new DataGridViewCellEventHandler(peakListMissedMonoChanged);
+            InitializeParameterSet();
+            InitializeMassWindow();
         }
 
-        bool initial_load = true;
-        bool loading;
         public void ExperimentExperimentComparison_Load(object sender, EventArgs e)
+        { }
+
+        public void compare_et()
         {
-            InitializeParameterSet();
-            if (Lollipop.ee_relations.Count == 0)
-            {
-                InitializeMassWindow();
-                Lollipop.make_ee_relationships();
-            }
+            if (Lollipop.ee_relations.Count == 0) RunTheGamut();
+        }
+
+        private void RunTheGamut()
+        {
+            this.Cursor = Cursors.WaitCursor;
+            ClearListsAndTables();
+            Lollipop.make_ee_relationships();
             this.FillTablesAndCharts();
+            this.Cursor = Cursors.Default;
             initial_load = false;
+        }
+
+        private void ClearListsAndTables()
+        {
+            Lollipop.ee_relations.Clear();
+            Lollipop.ee_peaks.Clear();
+            Lollipop.ef_relations.Clear();
+            Lollipop.proteoform_community.families.Clear();
+            foreach (Proteoform p in Lollipop.proteoform_community.experimental_proteoforms) p.relationships.RemoveAll(r => r.relation_type == ProteoformComparison.ee || r.relation_type == ProteoformComparison.ef);
+            foreach (Proteoform p in Lollipop.proteoform_community.theoretical_proteoforms) p.relationships.RemoveAll(r => r.relation_type == ProteoformComparison.ee || r.relation_type == ProteoformComparison.ef);
+            Lollipop.proteoform_community.relations_in_peaks.RemoveAll(r => r.relation_type == ProteoformComparison.ee || r.relation_type == ProteoformComparison.ef);
+            Lollipop.proteoform_community.delta_mass_peaks.RemoveAll(k => k.relation_type == ProteoformComparison.ee || k.relation_type == ProteoformComparison.ef);
+
+            dgv_EE_Relations.DataSource = null;
+            dgv_EE_Peaks.DataSource = null;
+            dgv_EE_Relations.Rows.Clear();
+            dgv_EE_Peaks.Rows.Clear();
         }
 
         public void FillTablesAndCharts()
@@ -52,31 +76,6 @@ namespace ProteoformSuite
             updateFiguresOfMerit();
         }
 
-        private void RunTheGamut()
-        {
-            loading = true;
-            this.Cursor = Cursors.WaitCursor;
-            ClearListsAndTables();
-            Lollipop.make_ee_relationships();
-            this.FillTablesAndCharts();
-            this.Cursor = Cursors.Default;
-            loading = false;
-        }
-
-        private void ClearListsAndTables()
-        {
-            Lollipop.ee_relations.Clear();
-            Lollipop.ee_peaks.Clear();
-            Lollipop.ef_relations.Clear();
-            Lollipop.proteoform_community.relations_in_peaks.Clear();
-            Lollipop.proteoform_community.delta_mass_peaks.Clear();
-
-            dgv_EE_Relations.DataSource = null;
-            dgv_EE_Peaks.DataSource = null;
-            dgv_EE_Relations.Rows.Clear();
-            dgv_EE_Peaks.Rows.Clear();
-        }
-        
         private void updateFiguresOfMerit()
         {
             List<DeltaMassPeak> big_peaks = Lollipop.ee_peaks.Where(p => p.peak_accepted).ToList();
@@ -155,7 +154,7 @@ namespace ProteoformSuite
 
             nUD_PeakCountMinThreshold.Minimum = 0;
             nUD_PeakCountMinThreshold.Maximum = 1000;
-            nUD_PeakCountMinThreshold.Value = Convert.ToDecimal(Lollipop.min_peak_count);
+            nUD_PeakCountMinThreshold.Value = Convert.ToDecimal(Lollipop.min_signal_noise);
         }
 
         private void propagatePeakListAcceptedPeakChangeToPairsTable(object sender, DataGridViewCellEventArgs e)
@@ -163,17 +162,6 @@ namespace ProteoformSuite
             updateFiguresOfMerit();
         }
 
-        private void peakListMissedMonoChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (!initial_load && !loading)
-            { DeltaMassPeak peak = (DeltaMassPeak)this.dgv_EE_Peaks.Rows[e.RowIndex].DataBoundItem;
-            Parallel.ForEach<ProteoformRelation>(peak.grouped_relations, ee =>
-            {
-                ((ExperimentalProteoform)ee.connected_proteoforms[0]).missed_mono = peak.missed_mono;
-                ((ExperimentalProteoform)ee.connected_proteoforms[1]).missed_mono = peak.missed_mono;
-            });
-            }
-        }
 
         private void peakListSpecificPeakAcceptanceChanged(object sender, EventArgs e)
         {
@@ -243,7 +231,7 @@ namespace ProteoformSuite
 
         private void nUD_PeakCountMinThreshold_ValueChanged(object sender, EventArgs e)
         {
-            if (!initial_load) Lollipop.min_peak_count = Convert.ToDouble(nUD_PeakCountMinThreshold.Value);
+            if (!initial_load) Lollipop.min_signal_noise = Convert.ToDouble(nUD_PeakCountMinThreshold.Value);
         }
 
         private void nUD_NoManLower_ValueChanged(object sender, EventArgs e)
