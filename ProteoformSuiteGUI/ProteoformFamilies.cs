@@ -69,7 +69,7 @@ namespace ProteoformSuite
         private void format_families_dgv()
         {
             //set column header
-            //dgv_proteoform_families.Columns["family_id"].HeaderText = "Light Monoisotopic Mass";
+            dgv_proteoform_families.Columns["family_id"].HeaderText = "Family ID";
             dgv_proteoform_families.Columns["lysine_count"].HeaderText = "Lysine Count";
             dgv_proteoform_families.Columns["experimental_count"].HeaderText = "Experimental Proteoforms";
             dgv_proteoform_families.Columns["theoretical_count"].HeaderText = "Theoretical Proteoforms";

@@ -98,6 +98,12 @@ namespace ProteoformSuite
 
             dgv_RawExpNeuCodePairs.Columns["id"].Visible = false;
             dgv_RawExpNeuCodePairs.Columns["intensity_sum"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["num_charge_states_fromFile"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["intensity_reported"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["input_file"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["manual_mass_shift"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["neuCodeLight"].Visible = false;
+            dgv_RawExpNeuCodePairs.Columns["neuCodeHeavy"].Visible = false;
             dgv_RawExpNeuCodePairs.AllowUserToAddRows = false;
         }
 

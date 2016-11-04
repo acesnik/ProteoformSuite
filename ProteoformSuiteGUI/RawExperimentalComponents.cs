@@ -143,9 +143,26 @@ namespace ProteoformSuite
                 Format_RawIndChgSts();
             }
         }
-
+        private void dgv_RawExpComp_MI_masses_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && !Lollipop.opened_results_originally)
+            {
+                ProteoformSuiteInternal.Component c = (ProteoformSuiteInternal.Component)this.dgv_RawExpComp_MI_masses.Rows[e.RowIndex].DataBoundItem;
+                DisplayUtility.FillDataGridView(dgv_RawExpComp_IndChgSts, c.charge_states);
+                Format_RawIndChgSts();
+            }
+        }
 
         private void dgv_RawQuantComp_MI_masses_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && !Lollipop.opened_results_originally)
+            {
+                ProteoformSuiteInternal.Component c = (ProteoformSuiteInternal.Component)this.dgv_RawQuantComp_MI_masses.Rows[e.RowIndex].DataBoundItem;
+                DisplayUtility.FillDataGridView(dgv_RawQuantComp_IndChgSts, c.charge_states);
+                Format_QuantIndChgSts();
+            }
+        }
+        private void dgv_RawQuantComp_MI_masses_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && !Lollipop.opened_results_originally)
             {
@@ -191,6 +208,5 @@ namespace ProteoformSuite
             if (Lollipop.calibration_files().Count() == 0) dgv_RawQuantComp_IndChgSts.Columns["mz_correction"].Visible = false;
             dgv_RawQuantComp_IndChgSts.AllowUserToAddRows = false;
         }
-
     }
 }

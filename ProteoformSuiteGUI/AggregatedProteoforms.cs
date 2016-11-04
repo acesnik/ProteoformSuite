@@ -92,6 +92,10 @@ namespace ProteoformSuite
         {
             if (e.RowIndex >= 0 && !Lollipop.opened_results_originally) display_light_proteoforms(e.RowIndex);
         }
+        private void dgv_AggregatedProteoforms_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && !Lollipop.opened_results_originally) display_light_proteoforms(e.RowIndex);
+        }
         private void display_light_proteoforms(int row_index)
         {
             ExperimentalProteoform selected_pf = (ExperimentalProteoform)this.dgv_AggregatedProteoforms.Rows[row_index].DataBoundItem;
@@ -131,7 +135,6 @@ namespace ProteoformSuite
 
 
             dgv_AcceptNeuCdLtProteoforms.AllowUserToAddRows = false;
-            dgv_AcceptNeuCdLtProteoforms.Columns["_manual_mass_shift"].Visible = false;
             dgv_AcceptNeuCdLtProteoforms.Columns["intensity_sum"].Visible = false;
             dgv_AcceptNeuCdLtProteoforms.Columns["num_charge_states_fromFile"].Visible = false;
 

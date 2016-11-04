@@ -79,6 +79,7 @@
             this.dgv_AggregatedProteoforms.RowTemplate.Height = 28;
             this.dgv_AggregatedProteoforms.Size = new System.Drawing.Size(633, 341);
             this.dgv_AggregatedProteoforms.TabIndex = 0;
+            this.dgv_AggregatedProteoforms.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_AggregatedProteoforms_CellClick);
             this.dgv_AggregatedProteoforms.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_AggregatedProteoforms_CellContentClick);
             this.dgv_AggregatedProteoforms.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_AggregatedProteoforms_CellMouseClick);
             // 
