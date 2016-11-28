@@ -240,15 +240,24 @@ namespace ProteoformSuiteInternal
                 remaining_proteoforms = Lollipop.raw_experimental_components.OrderByDescending(p => p.intensity_sum).Where(p => p.accepted == true && p.relative_abundance >= Lollipop.min_rel_abundance && p.num_charge_states >= Lollipop.min_num_CS).ToArray();
 
             int count = 1;
-            while (remaining_proteoforms.Length > 0)
+            foreach (Component c in remaining_proteoforms)
             {
-                Component root = remaining_proteoforms[0];
-                List<Component> tmp_remaining_proteoforms = remaining_proteoforms.ToList();
-                ExperimentalProteoform temp_pf = new ExperimentalProteoform("E_" + count, root, tmp_remaining_proteoforms, true); //first pass returns temporary proteoform
-                ExperimentalProteoform new_pf = new ExperimentalProteoform("E_" + count, temp_pf, tmp_remaining_proteoforms, true); //second pass uses temporary protoeform from first pass.
-                candidateExperimentalProteoforms.Add(new_pf);
-                remaining_proteoforms = tmp_remaining_proteoforms.Except(new_pf.aggregated_components).ToArray();
-                count += 1;
+                bool aggregated = false;
+                foreach (ExperimentalProteoform e in candidateExperimentalProteoforms)
+                {
+                    if (e.includes(c))
+                    {
+                        e.aggregated_components.Add(c);
+                        e.calculate_properties();
+                        aggregated = true;
+                        break;
+                    }
+                }
+                if (!aggregated)
+                {
+                    candidateExperimentalProteoforms.Add(new ExperimentalProteoform("E_" + count, c, true));
+                    count++;
+                }
             }
             return candidateExperimentalProteoforms;
         }

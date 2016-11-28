@@ -127,6 +127,13 @@ namespace ProteoformSuiteInternal
             this.root = this.aggregated_components.OrderByDescending(a => a.intensity_sum).FirstOrDefault();
         }
 
+        public ExperimentalProteoform(string accession, Component root, bool is_target) : base(accession)
+        {
+            this.root = root;
+            if (Lollipop.neucode_labeled) this.lysine_count = ((NeuCodePair)root).lysine_count;
+            this.aggregated_components = new List<Component> { root };
+        }
+
         public ExperimentalProteoform(string accession, ExperimentalProteoform temp, List<Component> candidate_observations, List<Component> quantitative_observations, bool is_target) : base(accession) //this is for first mass of aggregate components. uses a temporary component
         {
             Component root = new Component();
@@ -236,7 +243,7 @@ namespace ProteoformSuiteInternal
             this.accession = accession;
         }
 
-        private void calculate_properties()
+        public void calculate_properties()
         {
             //if not neucode labeled, the intensity sum of overlapping charge states was calculated with all charge states.
             if (Lollipop.neucode_labeled)
@@ -265,6 +272,13 @@ namespace ProteoformSuiteInternal
         {
             bool does_include = tolerable_rt(candidate, root.rt_apex) && tolerable_mass(candidate, root.weighted_monoisotopic_mass);
             if (candidate is NeuCodePair) does_include = does_include && tolerable_lysCt((NeuCodePair)candidate, ((NeuCodePair)root).lysine_count);
+            return does_include;
+        }
+
+        public bool includes(Component candidate)
+        {
+            bool does_include = tolerable_rt(candidate, this.agg_rt) && tolerable_mass(candidate, this.agg_mass);
+            if (candidate is NeuCodePair) does_include = does_include && tolerable_lysCt((NeuCodePair)candidate, this.lysine_count);
             return does_include;
         }
 
