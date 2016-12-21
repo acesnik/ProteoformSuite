@@ -18,6 +18,7 @@ namespace ProteoformSuite
         OpenFileDialog fileOpener = new OpenFileDialog();
         FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
         bool got_cyto_temp_folder = false;
+        double sleep_multiplier = 1;
 
         public ProteoformFamilies()
         {
@@ -193,7 +194,7 @@ namespace ProteoformSuite
             }
             string time_stamp = SaveState.time_stamp();
             tb_recentTimeStamp.Text = time_stamp;
-            CytoscapeScript c = new CytoscapeScript(families, time_stamp);
+            CytoscapeScript c = new CytoscapeScript(families, time_stamp, sleep_multiplier);
             File.WriteAllText(c.edges_path, c.edge_table);
             File.WriteAllText(c.nodes_path, c.node_table);
             File.WriteAllText(c.script_path, c.script);
@@ -210,6 +211,16 @@ namespace ProteoformSuite
         private void nud_decimalRoundingLabels_ValueChanged(object sender, EventArgs e)
         {
             Lollipop.deltaM_edge_display_rounding = Convert.ToInt32(this.nud_decimalRoundingLabels.Value);
+        }
+
+        private void btn_sleepInfo_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Raise this value if Cytoscape isn't making proper proteoform family displays. This increases the sleep time between commands that construct the visualization.");
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            sleep_multiplier = Convert.ToDouble(this.nud_sleepFactor.Value);
         }
     }
 }

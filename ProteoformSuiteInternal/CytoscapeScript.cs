@@ -19,10 +19,12 @@ namespace ProteoformSuiteInternal
         public string styles_path;
         public string script_path;
         public string style_name;
+        public double sleep_multiplier;
 
-        public CytoscapeScript(List<ProteoformFamily> families, string time_stamp)
+        public CytoscapeScript(List<ProteoformFamily> families, string time_stamp, double sleep_multiplier)
         {
             this.time_stamp = time_stamp;
+            this.sleep_multiplier = sleep_multiplier;
             this.nodes_path = Lollipop.family_build_folder_path + "\\cytoscape_nodes_" + time_stamp + ".tsv";
             this.edges_path = Lollipop.family_build_folder_path + "\\cytoscape_edges_" + time_stamp + ".tsv";
             this.styles_path = Lollipop.family_build_folder_path + "\\cytoscape_style_" + time_stamp + ".xml";
@@ -42,18 +44,18 @@ namespace ProteoformSuiteInternal
 
                 //Load Tables
                 "network import file file=\"" + this.edges_path + "\" firstRowAsColumnNames=true delimiters=\"\\t\" indexColumnSourceInteraction=\"1\" indexColumnTargetInteraction=\"3\" startLoadRow=\"0\" dataTypeList=\"s,s,s,s\"",
-                "command sleep duration=" + (0.8 + Math.Round((1.0 * sleep_factor), 2)).ToString(),
+                "command sleep duration=" + (0.8 + Math.Round((this.sleep_multiplier * sleep_factor), 2)).ToString(),
                 "table import file file =\"" + this.nodes_path + "\" startLoadRow=\"0\" keyColumnIndex=\"1\" DataTypeTargetForNetworkCollection=\"Node Table Columns\" dataTypeList=\"s,s,i\"",
-                "command sleep duration=" + (0.2 + Math.Round((0.2 * sleep_factor), 2)).ToString(),
+                "command sleep duration=" + (0.2 + Math.Round((this.sleep_multiplier / 5 * sleep_factor), 2)).ToString(),
 
 
                 //Load Settings
                 "vizmap load file file=\"" + this.styles_path + "\"",
                 "command sleep duration=0.5",
                 "vizmap apply styles=\"" + this.style_name + "\"",
-                "command sleep duration=" + (0.8 + Math.Round((1.0 * sleep_factor), 2)).ToString(),
+                "command sleep duration=" + (0.8 + Math.Round((this.sleep_multiplier * sleep_factor), 2)).ToString(),
                 "layout degree-circle",
-                "command sleep duration=" + (0.5 + Math.Round((0.5 * sleep_factor), 2)).ToString(),
+                "command sleep duration=" + (0.5 + Math.Round((this.sleep_multiplier / 2 * sleep_factor), 2)).ToString(),
                 "view fit content"
             });
         }

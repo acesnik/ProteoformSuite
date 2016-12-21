@@ -34,6 +34,9 @@
             this.pictureBox_familyDisplay = new System.Windows.Forms.PictureBox();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dgv_proteoform_family_members = new System.Windows.Forms.DataGridView();
+            this.btn_sleepInfo = new System.Windows.Forms.Button();
+            this.nud_sleepFactor = new System.Windows.Forms.NumericUpDown();
+            this.lb_sleep = new System.Windows.Forms.Label();
             this.tb_singleton_count = new System.Windows.Forms.TextBox();
             this.lb_singletons = new System.Windows.Forms.Label();
             this.nud_decimalRoundingLabels = new System.Windows.Forms.NumericUpDown();
@@ -65,6 +68,7 @@
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_proteoform_family_members)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_sleepFactor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_decimalRoundingLabels)).BeginInit();
             this.SuspendLayout();
             // 
@@ -141,6 +145,9 @@
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.btn_sleepInfo);
+            this.splitContainer3.Panel2.Controls.Add(this.nud_sleepFactor);
+            this.splitContainer3.Panel2.Controls.Add(this.lb_sleep);
             this.splitContainer3.Panel2.Controls.Add(this.tb_singleton_count);
             this.splitContainer3.Panel2.Controls.Add(this.lb_singletons);
             this.splitContainer3.Panel2.Controls.Add(this.nud_decimalRoundingLabels);
@@ -173,6 +180,43 @@
             this.dgv_proteoform_family_members.Size = new System.Drawing.Size(543, 334);
             this.dgv_proteoform_family_members.TabIndex = 3;
             // 
+            // btn_sleepInfo
+            // 
+            this.btn_sleepInfo.Location = new System.Drawing.Point(231, 73);
+            this.btn_sleepInfo.Name = "btn_sleepInfo";
+            this.btn_sleepInfo.Size = new System.Drawing.Size(130, 23);
+            this.btn_sleepInfo.TabIndex = 47;
+            this.btn_sleepInfo.Text = "Info - Sleep Multiplier";
+            this.btn_sleepInfo.UseVisualStyleBackColor = true;
+            this.btn_sleepInfo.Click += new System.EventHandler(this.btn_sleepInfo_Click);
+            // 
+            // nud_sleepFactor
+            // 
+            this.nud_sleepFactor.Location = new System.Drawing.Point(170, 76);
+            this.nud_sleepFactor.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nud_sleepFactor.Name = "nud_sleepFactor";
+            this.nud_sleepFactor.Size = new System.Drawing.Size(49, 20);
+            this.nud_sleepFactor.TabIndex = 46;
+            this.nud_sleepFactor.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nud_sleepFactor.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
+            // lb_sleep
+            // 
+            this.lb_sleep.AutoSize = true;
+            this.lb_sleep.Location = new System.Drawing.Point(78, 78);
+            this.lb_sleep.Name = "lb_sleep";
+            this.lb_sleep.Size = new System.Drawing.Size(78, 13);
+            this.lb_sleep.TabIndex = 45;
+            this.lb_sleep.Text = "Sleep Multiplier";
+            // 
             // tb_singleton_count
             // 
             this.tb_singleton_count.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -196,7 +240,12 @@
             // 
             // nud_decimalRoundingLabels
             // 
-            this.nud_decimalRoundingLabels.Location = new System.Drawing.Point(170, 79);
+            this.nud_decimalRoundingLabels.Location = new System.Drawing.Point(170, 102);
+            this.nud_decimalRoundingLabels.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             this.nud_decimalRoundingLabels.Name = "nud_decimalRoundingLabels";
             this.nud_decimalRoundingLabels.Size = new System.Drawing.Size(49, 20);
             this.nud_decimalRoundingLabels.TabIndex = 42;
@@ -205,7 +254,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 81);
+            this.label1.Location = new System.Drawing.Point(13, 102);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(143, 13);
             this.label1.TabIndex = 41;
@@ -214,7 +263,7 @@
             // lb_timeStamp
             // 
             this.lb_timeStamp.AutoSize = true;
-            this.lb_timeStamp.Location = new System.Drawing.Point(28, 49);
+            this.lb_timeStamp.Location = new System.Drawing.Point(29, 49);
             this.lb_timeStamp.Name = "lb_timeStamp";
             this.lb_timeStamp.Size = new System.Drawing.Size(127, 13);
             this.lb_timeStamp.TabIndex = 39;
@@ -230,7 +279,7 @@
             // 
             // btn_buildSelectedFamilies
             // 
-            this.btn_buildSelectedFamilies.Location = new System.Drawing.Point(97, 139);
+            this.btn_buildSelectedFamilies.Location = new System.Drawing.Point(97, 164);
             this.btn_buildSelectedFamilies.Name = "btn_buildSelectedFamilies";
             this.btn_buildSelectedFamilies.Size = new System.Drawing.Size(195, 23);
             this.btn_buildSelectedFamilies.TabIndex = 7;
@@ -240,7 +289,7 @@
             // 
             // btn_buildAllFamilies
             // 
-            this.btn_buildAllFamilies.Location = new System.Drawing.Point(112, 110);
+            this.btn_buildAllFamilies.Location = new System.Drawing.Point(112, 135);
             this.btn_buildAllFamilies.Name = "btn_buildAllFamilies";
             this.btn_buildAllFamilies.Size = new System.Drawing.Size(169, 23);
             this.btn_buildAllFamilies.TabIndex = 6;
@@ -355,6 +404,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_proteoform_family_members)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_sleepFactor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_decimalRoundingLabels)).EndInit();
             this.ResumeLayout(false);
 
@@ -384,5 +434,8 @@
         private System.Windows.Forms.NumericUpDown nud_decimalRoundingLabels;
         private System.Windows.Forms.TextBox tb_singleton_count;
         private System.Windows.Forms.Label lb_singletons;
+        private System.Windows.Forms.NumericUpDown nud_sleepFactor;
+        private System.Windows.Forms.Label lb_sleep;
+        private System.Windows.Forms.Button btn_sleepInfo;
     }
 }

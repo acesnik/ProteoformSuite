@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using ProteoformSuiteInternal;
 using System.Threading.Tasks;
 
 namespace ProteoformSuiteInternal
@@ -62,7 +61,7 @@ namespace ProteoformSuiteInternal
                 from pf1 in pfs1
                 from pf2 in pfs2
                 where allowed_ee_relation(pf1, pf2)
-                select new ProteoformRelation(pf1, pf2, relation_type, pf1.modified_mass - pf2.modified_mass)
+                select new ProteoformRelation(pf1, pf2, relation_type, pf1.modified_mass - pf2.modified_mass) //TODO: Using the ET pairs attached to pf1 or pf2 (the EET path), decide on the order in which to subtract the masses
             );
             count_nearby_relations(relations);  //putative counts include no-mans land
             return relations;
