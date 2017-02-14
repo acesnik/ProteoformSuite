@@ -454,7 +454,7 @@ namespace ProteoformSuiteInternal
 
     public class TheoreticalProteoform : Proteoform
     {
-        public List<Protein> proteinList { get; set; } = new List<Protein>();
+        public List<ProteinWithGoTerms> proteinList { get; set; } = new List<ProteinWithGoTerms>();
         public string name { get; set; }
         public string description { get; set; }
         public string fragment { get; set; }
@@ -477,7 +477,7 @@ namespace ProteoformSuiteInternal
         public int psm_count_TD { set { _psm_count_TD = value; } get { if (!Lollipop.opened_results_originally) return psm_list.Where(p => p.psm_type == PsmType.TopDown).ToList().Count; else return _psm_count_TD; } } 
         public string of_interest { get; set; } = "";
 
-        public TheoreticalProteoform(string accession, string description, Protein protein, bool is_metCleaved, double unmodified_mass, int lysine_count, List<GoTerm> goTerms, PtmSet ptm_set, double modified_mass, bool is_target) : 
+        public TheoreticalProteoform(string accession, string description, ProteinWithGoTerms protein, bool is_metCleaved, double unmodified_mass, int lysine_count, List<GoTerm> goTerms, PtmSet ptm_set, double modified_mass, bool is_target) : 
             base(accession, modified_mass, lysine_count, is_target)
         {
             this.proteinList.Add(protein);

@@ -396,7 +396,7 @@ namespace ProteoformSuite
         private Dictionary<GoTerm, int> getDatabaseGoNumbers()
         {
             Dictionary<GoTerm, int> numbers = new Dictionary<GoTerm, int>();
-            List<Protein> proteinList = new List<Protein>();
+            List<ProteinWithGoTerms> proteinList = new List<ProteinWithGoTerms>();
             List<string> experimentalProteoformAcessionList = new List<string>();
             List<GoTerm> completeGoTermList = new List<GoTerm>();
             List<GoTerm> uniqueGoTermList = new List<GoTerm>();
@@ -414,13 +414,13 @@ namespace ProteoformSuite
                 foreach (string acc in theoreticalAccessionList)
                 {
                     string someJunk = acc.Replace("_T", "!").Split('!').FirstOrDefault();
-                    Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
+                    ProteinWithGoTerms p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
                     if (p != null && !proteinList.Any(theoreticalProtein => theoreticalProtein.accession == p.accession))
                         proteinList.Add(p);
                 }
             }
 
-            foreach (Protein p in proteinList)
+            foreach (ProteinWithGoTerms p in proteinList)
             {
                 completeGoTermList.AddRange(p.goTerms);
             }
@@ -439,11 +439,11 @@ namespace ProteoformSuite
             return numbers;
         }
 
-        private List<GoTermNumber> getGoTermNumbers(List<Protein> interestingProteins)
+        private List<GoTermNumber> getGoTermNumbers(List<ProteinWithGoTerms> interestingProteins)
         {
             List<GoTermNumber> numbers = new List<GoTermNumber>();
             List<GoTerm> terms = new List<GoTerm>();
-            foreach (Protein p in interestingProteins)
+            foreach (ProteinWithGoTerms p in interestingProteins)
             {
                 foreach (GoTerm g in p.goTerms)
                 {
@@ -487,7 +487,7 @@ namespace ProteoformSuite
 
 
         // GETTING SIGNIFICANT PROTS
-        List<Protein> interestingProteins = new List<Protein>();
+        List<ProteinWithGoTerms> interestingProteins = new List<ProteinWithGoTerms>();
         List<ExperimentalProteoform.quantitativeValues> qVals = new List<ExperimentalProteoform.quantitativeValues>();
 
         private List<ExperimentalProteoform> getInterestingProteoforms(List<ExperimentalProteoform.quantitativeValues> qvals)
@@ -518,13 +518,13 @@ namespace ProteoformSuite
             return interesting_families.ToList();
         }
 
-        private List<Protein> getInterestingProteins(List<ExperimentalProteoform.quantitativeValues> qvals)
+        private List<ProteinWithGoTerms> getInterestingProteins(List<ExperimentalProteoform.quantitativeValues> qvals)
         {
             IEnumerable<string> interesting_theo_accessions = getInterestingFamilies(qvals).SelectMany(f => f.theoretical_proteoforms).Select(theo => theo.accession);
             foreach (string accession in interesting_theo_accessions)
             {
                 string someJunk = accession.Replace("_T", "!").Split('!').FirstOrDefault();
-                Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
+                ProteinWithGoTerms p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
                 if (p != null && !interestingProteins.Any(theoreticalProtein => theoreticalProtein.accession == p.accession))
                     interestingProteins.Add(p);
             }

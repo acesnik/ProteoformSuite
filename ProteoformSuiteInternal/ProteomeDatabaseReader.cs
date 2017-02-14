@@ -43,6 +43,20 @@ namespace ProteoformSuiteInternal
             {"Selenocysteine", 'U'}
         };
 
+        public static IDictionary<string, IList<Proteomics.Modification>> GetDict(List<Proteomics.ModificationWithMass> localizeableModifications)
+        {
+            var dict = new Dictionary<string, IList<Proteomics.Modification>>();
+            foreach (var nice in localizeableModifications)
+            {
+                IList<Proteomics.Modification> val;
+                if (dict.TryGetValue(nice.id, out val))
+                    val.Add(nice);
+                else
+                    dict.Add(nice.id, new List<Proteomics.Modification> { nice });
+            }
+            return dict;
+        }
+
         public Dictionary<string, Modification> ReadUniprotPtmlist()
         {
             string ptmFilePath = GetPtmlistPath_AfterFileRefresh();
@@ -127,9 +141,9 @@ namespace ProteoformSuiteInternal
             return oldPtmlistFilePath;
         }
 
-        public static Protein[] ReadUniprotXml(string uniprotXmlFile, Dictionary<string, Modification> uniprot_modification_table, int minPeptideLength, bool fixedMethionineCleavage)
+        public static ProteinWithGoTerms[] ReadUniprotXml(string uniprotXmlFile, Dictionary<string, Modification> uniprot_modification_table, int minPeptideLength, bool fixedMethionineCleavage)
         {
-            ConcurrentBag<Protein> bag_protein_list = new ConcurrentBag<Protein>();
+            ConcurrentBag<ProteinWithGoTerms> bag_protein_list = new ConcurrentBag<ProteinWithGoTerms>();
             using (var stream = new FileStream(uniprotXmlFile, FileMode.Open))
             {
                 Stream uniprotXmlFileStream;
@@ -162,7 +176,7 @@ namespace ProteoformSuiteInternal
                     XElement sequence_elem = GetChild(entry, "sequence");
                     string sequence = sequence_elem.Value.Replace("\r", null).Replace("\n", null);
                     string fragment = GetAttribute(sequence_elem, "fragment");
-                    if (fragment == "" || fragment == null)
+                    if (fragment == "" || fragment == null) //Keep in internal logic
                     {
                         fragment = "full";
                         if (fixedMethionineCleavage) fragment += "-met-cleaved";
@@ -241,7 +255,7 @@ namespace ProteoformSuiteInternal
                     }
 
                     //Add the full length protein, and then add the fragments with segments of the above modification dictionary
-                    bag_protein_list.Add(new Protein(accession, full_name, fragment, begin, end, sequence, goTerms, positionsAndPtms));
+                    bag_protein_list.Add(new ProteinWithGoTerms(accession, full_name, fragment, begin, end, sequence, goTerms, positionsAndPtms));
                     //MessageBox.Show("added " + new Protein(accession, name, fragment, begin, end, sequence, positionsAndPtms).ToString());
 
                     //PARALLEL PROBLEM
@@ -259,12 +273,12 @@ namespace ProteoformSuiteInternal
                                 XElement feature_end_elem = GetDescendant(feature, "end");
                                 int feature_begin = ConvertPositionElem(feature_begin_elem);
                                 int feature_end = ConvertPositionElem(feature_end_elem);
-                                if (feature_begin != -1 && feature_end != -1)
+                                if (feature_begin != -1 && feature_end != -1) // Keep in internal logic
                                 {
                                     bool justMetCleavage = fixedMethionineCleavage && feature_begin - 1 == begin && feature_end == end;
                                     string subsequence = sequence.Substring(feature_begin, feature_end - feature_begin + 1);
                                     if (!justMetCleavage && subsequence.Length != sequence.Length && subsequence.Length >= minPeptideLength)
-                                        bag_protein_list.Add(new Protein(accession, full_name, feature_type, feature_begin, feature_end, subsequence, goTerms,
+                                        bag_protein_list.Add(new ProteinWithGoTerms(accession, full_name, feature_type, feature_begin, feature_end, subsequence, goTerms,
                                             SegmentPtms(positionsAndPtms, feature_begin, feature_end)));
                                 }
                                 break;

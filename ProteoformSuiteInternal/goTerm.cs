@@ -33,7 +33,7 @@ namespace ProteoformSuiteInternal
         public double logfold { get; set; } // log base2 fold change
         public string proteinInCategoryFromSample { get; set; }
 
-        public GoTermNumber(GoTerm _goTerm, List<Protein> proteinsInSample, Dictionary<GoTerm, int> goMasterSet)
+        public GoTermNumber(GoTerm _goTerm, List<ProteinWithGoTerms> proteinsInSample, Dictionary<GoTerm, int> goMasterSet)
         {
             goTerm = _goTerm;
             id = _goTerm.id;
@@ -47,7 +47,7 @@ namespace ProteoformSuiteInternal
             pValue = goTerm_pValue(_goTerm, proteinsInSample, goMasterSet, k, f);
         }
 
-        private double getGoTermLogFold(int k, int f, List<Protein> proteinsInSample, Dictionary<GoTerm, int> goMasterSet)
+        private double getGoTermLogFold(int k, int f, List<ProteinWithGoTerms> proteinsInSample, Dictionary<GoTerm, int> goMasterSet)
         {
             int allSampleGoTerms = (from p in proteinsInSample
                                     from g in p.goTerms
@@ -67,11 +67,11 @@ namespace ProteoformSuiteInternal
                 return 0d;
         }
 
-        private double goTerm_pValue(GoTerm _goTerm, List<Protein> proteinsInSample, Dictionary<GoTerm, int> goMasterSet, int k, int f)
+        private double goTerm_pValue(GoTerm _goTerm, List<ProteinWithGoTerms> proteinsInSample, Dictionary<GoTerm, int> goMasterSet, int k, int f)
         {
             int allSampleGoTerms = 0;
 
-            foreach (Protein p in proteinsInSample)
+            foreach (ProteinWithGoTerms p in proteinsInSample)
             {
                 allSampleGoTerms = allSampleGoTerms + p.goTerms.Count();
             }
@@ -175,7 +175,7 @@ namespace ProteoformSuiteInternal
             return GenerateRandom(count, 0, Int32.MaxValue);
         }
 
-        private int sampleGoTermCount(GoTerm _goTerm, List<Protein> proteinsInSample)
+        private int sampleGoTermCount(GoTerm _goTerm, List<ProteinWithGoTerms> proteinsInSample)
         {
             int termCount = 0;
             termCount = (from p in proteinsInSample

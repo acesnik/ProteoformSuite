@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UsefulProteomicsDatabases;
 
 namespace ProteoformSuiteInternal
 {
@@ -439,11 +440,11 @@ namespace ProteoformSuiteInternal
         public static string ptmlist_filepath = "";
         public static string accessions_of_interest_list_filepath = "";
         public static string interest_type = "Of interest"; //label for proteins of interest. can be changed 
-        public static Protein[] proteins;
+        public static ProteinWithGoTerms[] proteins;
         public static List<Psm> psm_list = new List<Psm>();
 
         public static ProteomeDatabaseReader proteomeDatabaseReader = new ProteomeDatabaseReader();
-        public static Dictionary<string, Modification> uniprotModificationTable;
+        public static Dictionary<string, List<Proteomics.Modification>> uniprotModificationTable;
         static Dictionary<char, double> aaIsotopeMassList;
 
         public static void get_theoretical_proteoforms()
@@ -454,11 +455,12 @@ namespace ProteoformSuiteInternal
             Lollipop.psm_list.Clear();
 
             ProteomeDatabaseReader.oldPtmlistFilePath = ptmlist_filepath;
-            uniprotModificationTable = proteomeDatabaseReader.ReadUniprotPtmlist();
+            List<Proteomics.ModificationWithMass> mods = PtmListLoader.ReadMods(ptmlist_filepath).Where(b => b is Proteomics.ModificationWithMass).Select(b => b as Proteomics.ModificationWithMass).ToList();
             aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation).AA_Masses;
 
             //Read the UniProt-XML and ptmlist
-            proteins = ProteomeDatabaseReader.ReadUniprotXml(uniprot_xml_filepath, uniprotModificationTable, min_peptide_length, methionine_cleavage);
+            Dictionary<string, Proteomics.Modification> unkown_mods;
+            proteins = ProteinDbLoader.LoadProteinDb(uniprot_xml_filepath, false, ProteomeDatabaseReader.GetDict(mods), false, out unkown_mods);
             if (combine_identical_sequences) proteins = group_proteins_by_sequence(proteins);
 
             //Read the Morpheus BU data into PSM list
@@ -533,7 +535,7 @@ namespace ProteoformSuiteInternal
             });
         }
 
-        private static ProteinSequenceGroup[] group_proteins_by_sequence(IEnumerable<Protein> proteins)
+        private static ProteinSequenceGroup[] group_proteins_by_sequence(IEnumerable<ProteinWithGoTerms> proteins)
         {
             List<ProteinSequenceGroup> protein_sequence_groups = new List<ProteinSequenceGroup>();
             HashSet<string> unique_sequences = new HashSet<string>(proteins.Select(p => p.sequence));
@@ -552,7 +554,7 @@ namespace ProteoformSuiteInternal
         private static void process_entries()
         {
             List<TheoreticalProteoform> theoretical_proteoforms = new List<TheoreticalProteoform>();
-            foreach (Protein p in proteins)
+            foreach (ProteinWithGoTerms p in proteins)
             {
                 bool isMetCleaved = (methionine_cleavage && p.begin == 0 && p.sequence.Substring(0, 1) == "M");
                 int startPosAfterCleavage = Convert.ToInt32(isMetCleaved);
@@ -569,12 +571,12 @@ namespace ProteoformSuiteInternal
                 List<TheoreticalProteoform> decoy_proteoforms = new List<TheoreticalProteoform>();
                 string giantProtein = GetOneGiantProtein(proteins, methionine_cleavage); //Concatenate a giant protein out of all protein read from the UniProt-XML, and construct target and decoy proteoform databases
                 string decoy_database_name = decoy_database_name_prefix + decoyNumber;
-                Protein[] shuffled_proteins = new Protein[proteins.Length];
+                ProteinWithGoTerms[] shuffled_proteins = new ProteinWithGoTerms[proteins.Length];
                 shuffled_proteins = proteins;
                 new Random().Shuffle(shuffled_proteins); //randomize order of protein array
 
                 int prevLength = 0;
-                foreach (Protein p in shuffled_proteins)
+                foreach (ProteinWithGoTerms p in shuffled_proteins)
                 {
                     bool isMetCleaved = (methionine_cleavage && p.begin == 0 && p.sequence.Substring(0, 1) == "M"); // methionine cleavage of N-terminus specified
                     int startPosAfterCleavage = Convert.ToInt32(isMetCleaved);
@@ -590,7 +592,7 @@ namespace ProteoformSuiteInternal
             }
         }
 
-        private static void EnterTheoreticalProteformFamily(string seq, Protein prot, string accession, bool isMetCleaved, List<TheoreticalProteoform> theoretical_proteoforms, int decoy_number)
+        private static void EnterTheoreticalProteformFamily(string seq, ProteinWithGoTerms prot, string accession, bool isMetCleaved, List<TheoreticalProteoform> theoretical_proteoforms, int decoy_number)
         {
             //Calculate the properties of this sequence
             double unmodified_mass = TheoreticalProteoform.CalculateProteoformMass(seq, aaIsotopeMassList);
@@ -615,10 +617,10 @@ namespace ProteoformSuiteInternal
             } 
         }
 
-        private static string GetOneGiantProtein(IEnumerable<Protein> proteins, bool methionine_cleavage)
+        private static string GetOneGiantProtein(IEnumerable<ProteinWithGoTerms> proteins, bool methionine_cleavage)
         {
             StringBuilder giantProtein = new StringBuilder(5000000); // this set-aside is autoincremented to larger values when necessary.
-            foreach (Protein protein in proteins)
+            foreach (ProteinWithGoTerms protein in proteins)
             {
                 string sequence = protein.sequence;
                 bool isMetCleaved = methionine_cleavage && (sequence.Substring(0, 1) == "M");

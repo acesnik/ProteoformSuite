@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Proteomics;
 
 namespace ProteoformSuiteInternal
 {
-    public class Protein
+    public class ProteinWithGoTerms : Protein
     {
         public string accession { get; set; }
         public string description { get; set; }
@@ -15,7 +16,8 @@ namespace ProteoformSuiteInternal
         public List<GoTerm> goTerms { get; set; }
         public Dictionary<int, List<Modification>> ptms_by_position { get; set; }
 
-        public Protein(string accession, string name, string fragment, int begin, int end, string sequence, List<GoTerm> goTerms, Dictionary<int, List<Modification>> positionsAndPtms)
+        public ProteinWithGoTerms(string accession, string name, string fragment, int begin, int end, string sequence, List<GoTerm> goTerms, Dictionary<int, List<Modification>> positionsAndPtms) :
+            base(sequence, accession, positionsAndPtms, begin, end, fragment, name, full_name)
         {
             this.accession = accession;          
             this.name = name;
@@ -34,14 +36,14 @@ namespace ProteoformSuiteInternal
         //}
     }
 
-    public class ProteinSequenceGroup : Protein
+    public class ProteinSequenceGroup : ProteinWithGoTerms
     {
         public List<string> accessionList { get; set; } // this is the list of accession numbers for all proteins that share the same sequence. the list gets alphabetical order
 
         public ProteinSequenceGroup(string accession, string name, string fragment, int begin, int end, string sequence, List<GoTerm> goTerms, Dictionary<int, List<Modification>> positionsAndPtms)
             : base(accession, name, fragment, begin, end, sequence, goTerms, positionsAndPtms)
         { }
-        public ProteinSequenceGroup(List<Protein> proteins)
+        public ProteinSequenceGroup(List<ProteinWithGoTerms> proteins)
             : base(proteins[0].accession + "_G" + proteins.Count(), proteins[0].name, proteins[0].fragment, proteins[0].begin, proteins[0].end, proteins[0].sequence, proteins[0].goTerms, proteins[0].ptms_by_position)
         {
             this.accessionList = proteins.Select(p => p.accession).ToList();
