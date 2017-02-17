@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Proteomics;
 using System.Threading.Tasks;
 
 namespace ProteoformSuiteInternal
@@ -40,7 +40,7 @@ namespace ProteoformSuiteInternal
             description = _goTerm.description;
             aspect = _goTerm.aspect.ToString();
             
-            proteinInCategoryFromSample = String.Join("; ", (from p in proteinsInSample from t in p.goTerms where t.id == _goTerm.id select p).ToList().Select(o=>o.accession).ToList());
+            proteinInCategoryFromSample = String.Join("; ", (from p in proteinsInSample from t in p.GoTerms where t.id == _goTerm.id select p).ToList().Select(o=>o.accession).ToList());
             k = sampleGoTermCount(_goTerm, proteinsInSample);            
             f = goMasterSet[goMasterSet.Keys.Where(k => k.id == _goTerm.id).First()];
             logfold = getGoTermLogFold(k, f, proteinsInSample, goMasterSet); 
@@ -50,7 +50,7 @@ namespace ProteoformSuiteInternal
         private double getGoTermLogFold(int k, int f, List<Protein> proteinsInSample, Dictionary<GoTerm, int> goMasterSet)
         {
             int allSampleGoTerms = (from p in proteinsInSample
-                                    from g in p.goTerms
+                                    from g in p.GoTerms
                                     select g).ToList().Count();
                
             double numerator = (double)k / allSampleGoTerms;
@@ -73,7 +73,7 @@ namespace ProteoformSuiteInternal
 
             foreach (Protein p in proteinsInSample)
             {
-                allSampleGoTerms = allSampleGoTerms + p.goTerms.Count();
+                allSampleGoTerms = allSampleGoTerms + p.GoTerms.Count();
             }
 
             int maxPermutations = 500;
@@ -179,7 +179,7 @@ namespace ProteoformSuiteInternal
         {
             int termCount = 0;
             termCount = (from p in proteinsInSample
-                         from t in p.goTerms
+                         from t in p.GoTerms
                          where t.id == _goTerm.id
                          select p).ToList().Count();
 

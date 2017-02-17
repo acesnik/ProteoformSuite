@@ -200,7 +200,7 @@ namespace ProteoformSuite
             openXmlDialog.Title = "UniProt XML Format Database";
             DialogResult dr = this.openXmlDialog.ShowDialog();
             if (dr == System.Windows.Forms.DialogResult.OK)
-                Lollipop.uniprot_xml_filepath = openXmlDialog.FileName;
+                Lollipop.protein_databases = openXmlDialog.FileName;
             else return;
         }
 
@@ -398,8 +398,8 @@ namespace ProteoformSuite
         public bool full_run()
         {
             clear_lists();
-            if (!File.Exists(Lollipop.uniprot_xml_filepath)) get_uniprot_xml();
-            if (!File.Exists(Lollipop.uniprot_xml_filepath)) return false; //user hit cancel
+            if (!File.Exists(Lollipop.protein_databases)) get_uniprot_xml();
+            if (!File.Exists(Lollipop.protein_databases)) return false; //user hit cancel
             if (!File.Exists(Lollipop.ptmlist_filepath)) get_ptm_list();
             if (!File.Exists(Lollipop.ptmlist_filepath)) return false; //user hit cancel
             this.Cursor = Cursors.WaitCursor;

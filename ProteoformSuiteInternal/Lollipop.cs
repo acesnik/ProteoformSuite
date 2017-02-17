@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UsefulProteomicsDatabases;
+using Proteomics;
 
 namespace ProteoformSuiteInternal
 {
@@ -435,14 +437,13 @@ namespace ProteoformSuiteInternal
         public static double ptmset_mass_tolerance = 0.00001;
         public static bool combine_identical_sequences = true;
         public static bool combine_theoretical_proteoforms_byMass = true;
-        public static string uniprot_xml_filepath = "";
-        public static string ptmlist_filepath = "";
+        public static List<string> protein_databases = new List<string>();
+        public static List<string> ptmlist_filepaths = new List<string>();
         public static string accessions_of_interest_list_filepath = "";
         public static string interest_type = "Of interest"; //label for proteins of interest. can be changed 
         public static Protein[] proteins;
         public static List<Psm> psm_list = new List<Psm>();
 
-        public static ProteomeDatabaseReader proteomeDatabaseReader = new ProteomeDatabaseReader();
         public static Dictionary<string, Modification> uniprotModificationTable;
         static Dictionary<char, double> aaIsotopeMassList;
 
@@ -453,12 +454,11 @@ namespace ProteoformSuiteInternal
             Lollipop.proteoform_community.decoy_proteoforms = new Dictionary<string, TheoreticalProteoform[]>();
             Lollipop.psm_list.Clear();
 
-            ProteomeDatabaseReader.oldPtmlistFilePath = ptmlist_filepath;
-            uniprotModificationTable = proteomeDatabaseReader.ReadUniprotPtmlist();
-            aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation).AA_Masses;
-
             //Read the UniProt-XML and ptmlist
-            proteins = ProteomeDatabaseReader.ReadUniprotXml(uniprot_xml_filepath, uniprotModificationTable, min_peptide_length, methionine_cleavage);
+            List<ModificationWithLocation> all_modifications = ptmlist_filepaths.SelectMany(file => PtmListLoader.ReadMods(file)).ToList();
+            Dictionary<string, Modification> um;
+            proteins = protein_databases.SelectMany(file => ProteinDbLoader.LoadProteinDb(file, false, all_modifications, false, out um)).ToArray();
+            aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation).AA_Masses;
             if (combine_identical_sequences) proteins = group_proteins_by_sequence(proteins);
 
             //Read the Morpheus BU data into PSM list

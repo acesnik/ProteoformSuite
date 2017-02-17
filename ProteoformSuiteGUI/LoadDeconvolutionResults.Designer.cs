@@ -91,7 +91,7 @@
             this.cb_td_file.AutoSize = true;
             this.cb_td_file.Location = new System.Drawing.Point(23, 91);
             this.cb_td_file.Name = "cb_td_file";
-            this.cb_td_file.Size = new System.Drawing.Size(165, 17);
+            this.cb_td_file.Size = new System.Drawing.Size(422, 36);
             this.cb_td_file.TabIndex = 2;
             this.cb_td_file.Text = "Top-down Deconvolution File";
             this.cb_td_file.UseVisualStyleBackColor = true;
@@ -103,7 +103,7 @@
             this.btn_unlabeled.AutoSize = true;
             this.btn_unlabeled.Location = new System.Drawing.Point(23, 57);
             this.btn_unlabeled.Name = "btn_unlabeled";
-            this.btn_unlabeled.Size = new System.Drawing.Size(73, 17);
+            this.btn_unlabeled.Size = new System.Drawing.Size(182, 36);
             this.btn_unlabeled.TabIndex = 1;
             this.btn_unlabeled.Text = "Unlabeled";
             this.btn_unlabeled.UseVisualStyleBackColor = true;
@@ -114,7 +114,7 @@
             this.btn_neucode.Checked = true;
             this.btn_neucode.Location = new System.Drawing.Point(23, 26);
             this.btn_neucode.Name = "btn_neucode";
-            this.btn_neucode.Size = new System.Drawing.Size(111, 17);
+            this.btn_neucode.Size = new System.Drawing.Size(282, 36);
             this.btn_neucode.TabIndex = 0;
             this.btn_neucode.TabStop = true;
             this.btn_neucode.Text = "NeuCode Labeled";
@@ -127,7 +127,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(284, 20);
+            this.label1.Size = new System.Drawing.Size(717, 46);
             this.label1.TabIndex = 2;
             this.label1.Text = "Proteoform Identification Results (.xlsx)";
             // 
@@ -137,7 +137,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(313, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(291, 20);
+            this.label2.Size = new System.Drawing.Size(738, 46);
             this.label2.TabIndex = 4;
             this.label2.Text = "Proteoform Quantification Results (.xlsx)";
             // 
@@ -147,7 +147,7 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(610, 13);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(293, 20);
+            this.label3.Size = new System.Drawing.Size(746, 46);
             this.label3.TabIndex = 6;
             this.label3.Text = "Deconvolution Calibration Files (.txt, .tsv)";
             this.label3.Visible = false;
@@ -324,7 +324,7 @@
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(1246, 13);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(183, 20);
+            this.label4.Size = new System.Drawing.Size(468, 46);
             this.label4.TabIndex = 20;
             this.label4.Text = "Top-Down Results (.xlsx)";
             this.label4.Visible = false;
@@ -335,7 +335,7 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(923, 13);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(258, 20);
+            this.label5.Size = new System.Drawing.Size(642, 46);
             this.label5.TabIndex = 21;
             this.label5.Text = "Morpheus Bottom-Up Results (.tsv)";
             this.label5.Visible = false;
@@ -401,7 +401,7 @@
             this.cb_run_when_load.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_run_when_load.Location = new System.Drawing.Point(16, 587);
             this.cb_run_when_load.Name = "cb_run_when_load";
-            this.cb_run_when_load.Size = new System.Drawing.Size(157, 17);
+            this.cb_run_when_load.Size = new System.Drawing.Size(402, 36);
             this.cb_run_when_load.TabIndex = 27;
             this.cb_run_when_load.Text = "Process when loading page";
             this.cb_run_when_load.UseVisualStyleBackColor = true;
@@ -425,7 +425,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(114, 49);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(110, 13);
+            this.label7.Size = new System.Drawing.Size(294, 32);
             this.label7.TabIndex = 32;
             this.label7.Text = "Quantification Results";
             // 
@@ -434,7 +434,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(114, 22);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(105, 13);
+            this.label6.Size = new System.Drawing.Size(279, 32);
             this.label6.TabIndex = 31;
             this.label6.Text = "Identification Results";
             // 
@@ -442,7 +442,7 @@
             // 
             this.tb_quantFilter.Location = new System.Drawing.Point(8, 46);
             this.tb_quantFilter.Name = "tb_quantFilter";
-            this.tb_quantFilter.Size = new System.Drawing.Size(100, 20);
+            this.tb_quantFilter.Size = new System.Drawing.Size(100, 38);
             this.tb_quantFilter.TabIndex = 30;
             this.tb_quantFilter.TextChanged += new System.EventHandler(this.tb_quantFilter_TextChanged);
             // 
@@ -450,7 +450,7 @@
             // 
             this.tb_identificationFilter.Location = new System.Drawing.Point(8, 19);
             this.tb_identificationFilter.Name = "tb_identificationFilter";
-            this.tb_identificationFilter.Size = new System.Drawing.Size(100, 20);
+            this.tb_identificationFilter.Size = new System.Drawing.Size(100, 38);
             this.tb_identificationFilter.TabIndex = 29;
             this.tb_identificationFilter.TextChanged += new System.EventHandler(this.tb_identificationFilter_TextChanged);
             // 
@@ -460,7 +460,7 @@
             this.cb_advanced_user.Enabled = false;
             this.cb_advanced_user.Location = new System.Drawing.Point(179, 587);
             this.cb_advanced_user.Name = "cb_advanced_user";
-            this.cb_advanced_user.Size = new System.Drawing.Size(114, 17);
+            this.cb_advanced_user.Size = new System.Drawing.Size(286, 36);
             this.cb_advanced_user.TabIndex = 30;
             this.cb_advanced_user.Text = "Advanced Options";
             this.cb_advanced_user.UseVisualStyleBackColor = true;

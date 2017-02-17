@@ -1,50 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Proteomics;
 
 namespace ProteoformSuiteInternal
 {
-    public class Modification
-    {
-        //Adapted from the class by the same name from Morpheus (http://cwenger.github.io/Morpheus) by Craig Wenger
-        // unused but available public string pA, cF, lC, tR, kW, dR;
-        public string description { get; set; } = "unmodified"; //ID
-        public string accession { get; set; } = ""; //AC
-        public string feature_type { get; set; } = ""; //FT
-        public string position { get; set; } = ""; //PP
-        public char[] target_aas { get; set; } = new char[0]; //TG
-        public double monoisotopic_mass_shift { get; set; } = 0; //MM
-        public double average_mass_shift { get; set; } = 0; //MA
-        public Modification() // constructs an "un-Modification"
-        { }
-        public Modification(string description, string accession, string featureType,
-            string position, char[] targetAAs, double monoisotopicMassShift, double averageMassShift)
-        {
-            this.description = description;
-            this.accession = accession;
-            this.feature_type = featureType;
-            this.position = position;
-            this.target_aas = targetAAs;
-            this.monoisotopic_mass_shift = monoisotopicMassShift;
-            this.average_mass_shift = averageMassShift;
-        }
+    //public class Modification
+    //{
+    //    //Adapted from the class by the same name from Morpheus (http://cwenger.github.io/Morpheus) by Craig Wenger
+    //    // unused but available public string pA, cF, lC, tR, kW, dR;
+    //    public string description { get; set; } = "unmodified"; //ID
+    //    public string accession { get; set; } = ""; //AC
+    //    public string feature_type { get; set; } = ""; //FT
+    //    public string position { get; set; } = ""; //PP
+    //    public char[] target_aas { get; set; } = new char[0]; //TG
+    //    public double monoisotopic_mass_shift { get; set; } = 0; //MM
+    //    public double average_mass_shift { get; set; } = 0; //MA
+    //    public Modification() // constructs an "un-Modification"
+    //    { }
+    //    public Modification(string description, string accession, string featureType,
+    //        string position, char[] targetAAs, double monoisotopicMassShift, double averageMassShift)
+    //    {
+    //        this.description = description;
+    //        this.accession = accession;
+    //        this.feature_type = featureType;
+    //        this.position = position;
+    //        this.target_aas = targetAAs;
+    //        this.monoisotopic_mass_shift = monoisotopicMassShift;
+    //        this.average_mass_shift = averageMassShift;
+    //    }
 
-        public Modification(string description)
-        {
-            this.description = description;
-        }
+    //    public Modification(string description)
+    //    {
+    //        this.description = description;
+    //    }
 
-        public override string ToString()
-        {
-            return "Description=" + this.description + " Accession=" + this.accession +
-                " FeatureType=" + this.feature_type + " MonisotopicMass=" + this.monoisotopic_mass_shift;
-        }
-    }
+    //    public override string ToString()
+    //    {
+    //        return "Description=" + this.description + " Accession=" + this.accession +
+    //            " FeatureType=" + this.feature_type + " MonisotopicMass=" + this.monoisotopic_mass_shift;
+    //    }
+    //}
 
     public class Ptm
     {
         public int position = -1;
-        public Modification modification = new Modification();
+        public Modification modification = new Modification("unmodified");
         public Ptm() // initializes an "un-Modification"
         { }
         public Ptm(int position, Modification modification)

@@ -126,7 +126,7 @@ namespace ProteoformSuite
                 try
                 {
                     tb_UniProtXML_Path.Text = uniprotXmlFile;
-                    Lollipop.uniprot_xml_filepath = uniprotXmlFile;
+                    Lollipop.protein_databases = uniprotXmlFile;
                     if (File.Exists(uniprotXmlFile))
                     {
                         gotXMLFilePath = true;

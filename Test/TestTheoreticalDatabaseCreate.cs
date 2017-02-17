@@ -29,7 +29,7 @@ namespace Test
             Lollipop.min_peptide_length = 7;
             Lollipop.ptmset_mass_tolerance = 0.00001;
             Lollipop.combine_identical_sequences = true;
-            Lollipop.uniprot_xml_filepath = "UnitTestFiles\\uniprot_yeast_test_12entries.xml";
+            Lollipop.protein_databases = "UnitTestFiles\\uniprot_yeast_test_12entries.xml";
             Lollipop.ptmlist_filepath = "UnitTestFiles\\ptmlist.txt";
 
             Lollipop.get_theoretical_proteoforms();
@@ -86,7 +86,7 @@ namespace Test
             Lollipop.min_peptide_length = 7;
             Lollipop.ptmset_mass_tolerance = 0.00001;
             Lollipop.combine_identical_sequences = true;
-            Lollipop.uniprot_xml_filepath = "UnitTestFiles\\uniprot_yeast_test_12entries.xml";
+            Lollipop.protein_databases = "UnitTestFiles\\uniprot_yeast_test_12entries.xml";
             Lollipop.ptmlist_filepath = "UnitTestFiles\\ptmlist.txt";
 
             Lollipop.get_theoretical_proteoforms();
