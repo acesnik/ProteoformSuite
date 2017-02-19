@@ -7,20 +7,6 @@ using System.Threading.Tasks;
 
 namespace ProteoformSuiteInternal
 {
-    public class GoTerm
-    {
-        public string id { get; set; }
-        public string description { get; set; }
-        public Aspect aspect { get; set; }
-    }
-
-    public enum Aspect
-    {
-        molecularFunction,
-        cellularComponent,
-        biologicalProcess
-    }
-
     public class GoTermNumber
     {
         public GoTerm goTerm { get; set; }
@@ -40,7 +26,7 @@ namespace ProteoformSuiteInternal
             description = _goTerm.description;
             aspect = _goTerm.aspect.ToString();
             
-            proteinInCategoryFromSample = String.Join("; ", (from p in proteinsInSample from t in p.GoTerms where t.id == _goTerm.id select p).ToList().Select(o=>o.accession).ToList());
+            proteinInCategoryFromSample = String.Join("; ", (from p in proteinsInSample from t in p.GoTerms where t.id == _goTerm.id select p).ToList().Select(o=>o.Accession).ToList());
             k = sampleGoTermCount(_goTerm, proteinsInSample);            
             f = goMasterSet[goMasterSet.Keys.Where(k => k.id == _goTerm.id).First()];
             logfold = getGoTermLogFold(k, f, proteinsInSample, goMasterSet); 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using Proteomics;
 
 namespace ProteoformSuiteInternal
 {
@@ -442,14 +443,6 @@ namespace ProteoformSuiteInternal
             }
             this.root = this.aggregated_components.OrderByDescending(a => a.intensity_sum).FirstOrDefault();
         }
-
-        
-        
-
-        
-
-        
-
     }
 
     public class TheoreticalProteoform : Proteoform
@@ -483,10 +476,10 @@ namespace ProteoformSuiteInternal
             this.proteinList.Add(protein);
             this.accession = accession;
             this.description = description;
-            this.name = protein.name;
-            this.fragment = protein.fragment;
-            this.begin = protein.begin + Convert.ToInt32(is_metCleaved);
-            this.end = protein.end;
+            this.name = protein.Name;
+            this.fragment = protein.BigPeptideTypes.FirstOrDefault();
+            this.begin = (int)protein.OneBasedBeginPositions.FirstOrDefault() + Convert.ToInt32(is_metCleaved);
+            this.end = (int)protein.OneBasedEndPositions.FirstOrDefault();
             this.ptm_set = ptm_set;
             this.unmodified_mass = unmodified_mass;
         }
@@ -539,7 +532,7 @@ namespace ProteoformSuiteInternal
             if (ptm_list.Count == 0)
                 return "unmodified";
             else
-                return string.Join("; ", ptm_list.Select(ptm => ptm.modification.description));
+                return string.Join("; ", ptm_list.Select(ptm => ptm.modification.id));
         }
     }
 

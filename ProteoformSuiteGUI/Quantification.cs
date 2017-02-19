@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
+using Proteomics;
 
 namespace ProteoformSuite
 {
@@ -54,7 +55,7 @@ namespace ProteoformSuite
 
         public void perform_calculations()
         {
-            if (Lollipop.quantification_files().Count() > 0 && Lollipop.proteoform_community.experimental_proteoforms.Length > 0 && qVals.Count <= 0)
+            if (Lollipop.get_files(Purpose.Quantification).Count() > 0 && Lollipop.proteoform_community.experimental_proteoforms.Length > 0 && qVals.Count <= 0)
             {
                 initialize();
                 quantify();
@@ -414,15 +415,15 @@ namespace ProteoformSuite
                 foreach (string acc in theoreticalAccessionList)
                 {
                     string someJunk = acc.Replace("_T", "!").Split('!').FirstOrDefault();
-                    Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
-                    if (p != null && !proteinList.Any(theoreticalProtein => theoreticalProtein.accession == p.accession))
+                    Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.Accession == someJunk);
+                    if (p != null && !proteinList.Any(theoreticalProtein => theoreticalProtein.Accession == p.Accession))
                         proteinList.Add(p);
                 }
             }
 
             foreach (Protein p in proteinList)
             {
-                completeGoTermList.AddRange(p.goTerms);
+                completeGoTermList.AddRange(p.GoTerms);
             }
 
             foreach (GoTerm t in completeGoTermList)
@@ -445,7 +446,7 @@ namespace ProteoformSuite
             List<GoTerm> terms = new List<GoTerm>();
             foreach (Protein p in interestingProteins)
             {
-                foreach (GoTerm g in p.goTerms)
+                foreach (GoTerm g in p.GoTerms)
                 {
                     if (!terms.Any(item => item.id == g.id))
                         terms.Add(g);
@@ -513,7 +514,7 @@ namespace ProteoformSuite
         {
             IEnumerable<ProteoformFamily> interesting_families =
                 from fam in Lollipop.proteoform_community.families
-                where fam.theoretical_proteoforms.Any(t => t.proteinList.Any(p => p.goTerms.Any(g => go_terms_numbers.Select(n => n.goTerm).Contains(g))))
+                where fam.theoretical_proteoforms.Any(t => t.proteinList.Any(p => p.GoTerms.Any(g => go_terms_numbers.Select(n => n.goTerm).Contains(g))))
                 select fam;
             return interesting_families.ToList();
         }
@@ -524,8 +525,8 @@ namespace ProteoformSuite
             foreach (string accession in interesting_theo_accessions)
             {
                 string someJunk = accession.Replace("_T", "!").Split('!').FirstOrDefault();
-                Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.accession == someJunk);
-                if (p != null && !interestingProteins.Any(theoreticalProtein => theoreticalProtein.accession == p.accession))
+                Protein p = Lollipop.proteins.FirstOrDefault(protein => protein.Accession == someJunk);
+                if (p != null && !interestingProteins.Any(theoreticalProtein => theoreticalProtein.Accession == p.Accession))
                     interestingProteins.Add(p);
             }
             return interestingProteins;

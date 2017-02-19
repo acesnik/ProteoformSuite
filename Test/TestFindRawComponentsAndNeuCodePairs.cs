@@ -3,6 +3,7 @@ using ProteoformSuiteInternal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Test
 {
@@ -22,7 +23,7 @@ namespace Test
             Lollipop.correctionFactors = null;
             Lollipop.raw_experimental_components.Clear();
             Func<InputFile, IEnumerable<Component>> componentReader = c => new ComponentReader().read_components_from_xlsx(c, Lollipop.correctionFactors);
-            Lollipop.input_files.Add(new InputFile("UnitTestFiles\\noisy.xlsx", Labeling.NeuCode, Purpose.Identification));
+            Lollipop.input_files.Add(new InputFile(Path.Combine(TestContext.CurrentContext.TestDirectory, "noisy.xlsx"), Labeling.NeuCode, Purpose.Identification));
 
             string inFileId = Lollipop.input_files[0].UniqueId.ToString();
 

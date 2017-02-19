@@ -8,11 +8,8 @@ namespace ProteoformSuiteInternal
     {
         public List<string> accessionList { get; set; } // this is the list of accession numbers for all proteins that share the same sequence. the list gets alphabetical order
 
-        public ProteinSequenceGroup(string accession, string name, string fragment, int begin, int end, string sequence, List<GoTerm> goTerms, Dictionary<int, List<Modification>> positionsAndPtms)
-            : base(accession, name, fragment, begin, end, sequence, goTerms, positionsAndPtms)
-        { }
         public ProteinSequenceGroup(List<Protein> proteins)
-            : base(proteins[0].accession + "_G" + proteins.Count(), proteins[0].name, proteins[0].fragment, proteins[0].begin, proteins[0].end, proteins[0].sequence, proteins[0].goTerms, proteins[0].ptms_by_position)
+            : base(proteins[0].BaseSequence, proteins[0].Accession + "_G" + proteins.Count(), new Dictionary<int, List<Modification>>(), proteins[0].OneBasedBeginPositions, proteins[0].OneBasedEndPositions, proteins[0].BigPeptideTypes, proteins[0].Name, proteins[0].FullName, false, proteins[0].IsContaminant, proteins[0].GoTerms)
         {
             this.accessionList = proteins.Select(p => p.Accession).ToList();
             HashSet<int> all_positions = new HashSet<int>(proteins.SelectMany(p => p.OneBasedPossibleLocalizedModifications.Keys).ToList());

@@ -31,16 +31,18 @@ namespace ProteoformSuiteInternal
 
         public double totalIntensity { get; set; } = 0;
 
-        public string path { get; set; }
+        public string complete_path { get; set; }
+        public string directory { get; set; }
         public string filename { get; set; }
         public string extension { get; set; }
         public Purpose purpose { get; set; } //ID, Quant, Calib, Bottom-Up or Top-Down
         public Labeling label { get; set; }
         public TDProgram td_program { get; set; } = TDProgram.NRTDP;
 
-        public InputFile(string path, string filename, string extension, Labeling label, Purpose purpose)
+        public InputFile(string complete_path, string directory, string filename, string extension, Labeling label, Purpose purpose)
         {
-            this.path = path;
+            this.complete_path = complete_path;
+            this.directory = directory;
             this.filename = filename;
             this.extension = extension;
             this.label = label;
@@ -48,9 +50,20 @@ namespace ProteoformSuiteInternal
             this.instanceId = ++instanceCounter;
         }
 
+        public InputFile(string complete_path, string directory, string filename, string extension, Purpose purpose)
+        {
+            this.complete_path = complete_path;
+            this.directory = directory;
+            this.filename = filename;
+            this.extension = extension;
+            this.purpose = purpose;
+            this.instanceId = ++instanceCounter;
+        }
+
         public InputFile(string completePath, Labeling label, Purpose purpose)
         {
-            this.path = Path.GetDirectoryName(completePath);
+            this.complete_path = completePath;
+            this.directory = Path.GetDirectoryName(completePath);
             this.filename = Path.GetFileNameWithoutExtension(completePath);
             this.extension = Path.GetExtension(completePath);
             this.label = label;
@@ -60,7 +73,8 @@ namespace ProteoformSuiteInternal
 
         public InputFile(string completePath, Labeling label, Purpose purpose, int biorep)
         {
-            this.path = Path.GetDirectoryName(completePath);
+            this.complete_path = completePath;
+            this.directory = Path.GetDirectoryName(completePath);
             this.filename = Path.GetFileNameWithoutExtension(completePath);
             this.extension = Path.GetExtension(completePath);
             this.label = label;
@@ -71,8 +85,9 @@ namespace ProteoformSuiteInternal
 
         public InputFile(int uniqueID, string completePath, Labeling label, Purpose purpose)
         {
+            this.complete_path = completePath;
             this.instanceId = uniqueID;
-            this.path = Path.GetDirectoryName(completePath);
+            this.directory = Path.GetDirectoryName(completePath);
             this.filename = Path.GetFileNameWithoutExtension(completePath);
             this.extension = Path.GetExtension(completePath);
             this.label = label;
@@ -81,6 +96,7 @@ namespace ProteoformSuiteInternal
 
         public InputFile(int uniqueID, bool matchingFile, int bioRep, int fraction, int techRep, string ltCond, string hvCond, string completePath, Labeling label, Purpose purpose)
         {
+            this.complete_path = completePath;
             this.instanceId = uniqueID;
             this.matchingCalibrationFile = matchingFile;
             this.biological_replicate = bioRep;
@@ -88,7 +104,7 @@ namespace ProteoformSuiteInternal
             this.technical_replicate = techRep;
             this.lt_condition = ltCond;
             this.hv_condition = hvCond;
-            this.path = Path.GetDirectoryName(completePath);
+            this.directory = Path.GetDirectoryName(completePath);
             this.filename = Path.GetFileNameWithoutExtension(completePath);
             this.extension = Path.GetExtension(completePath);
             this.label = label;
@@ -112,7 +128,9 @@ namespace ProteoformSuiteInternal
         Quantification,
         Calibration,
         BottomUp,
-        TopDown
+        TopDown,
+        ProteinDatabase,
+        PtmList
     }
 
     public enum Labeling

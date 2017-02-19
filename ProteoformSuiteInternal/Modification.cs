@@ -45,10 +45,10 @@ namespace ProteoformSuiteInternal
     public class Ptm
     {
         public int position = -1;
-        public Modification modification = new Modification("unmodified");
+        public ModificationWithMass modification = new ModificationWithMass("unmodified", null, null, ModificationSites.Any, 0, null, -1, null, null, null);
         public Ptm() // initializes an "un-Modification"
         { }
-        public Ptm(int position, Modification modification)
+        public Ptm(int position, ModificationWithMass modification)
         {
             this.position = position;
             this.modification = modification;
@@ -65,7 +65,7 @@ namespace ProteoformSuiteInternal
             set
             {
                 this._ptm_combination = value;
-                this.mass = value.Select(ptm => ptm.modification.monoisotopic_mass_shift).Sum();
+                this.mass = value.Select(ptm => ptm.modification.monoisotopicMass).Sum();
             }
         }
 
@@ -78,11 +78,11 @@ namespace ProteoformSuiteInternal
     public class PtmCombos
     {
         public List<Ptm> all_ptms;
-        public PtmCombos(Dictionary<int, List<Modification>> ptm_data)
+        public PtmCombos(IDictionary<int, List<Modification>> ptm_data)
         {
             this.all_ptms = new List<Ptm>(
                 from position in ptm_data.Keys
-                from modification in ptm_data[position]
+                from modification in ptm_data[position].OfType<ModificationWithMass>()
                 select new Ptm(position, modification)
             );
         }
