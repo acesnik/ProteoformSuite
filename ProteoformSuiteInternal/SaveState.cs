@@ -140,22 +140,14 @@ namespace ProteoformSuiteInternal
 
         private static void add_objects(XmlWriter writer)
         {
-            List<FieldInfo> lollipop_objects = typeof(Lollipop).GetFields().Where(f => !f.IsLiteral && f.FieldType.IsClass).ToList();
-            List<FieldInfo> lollipop_enumerables = typeof(Lollipop).GetFields().Where(f => !f.IsLiteral && f.FieldType.IsClass && f.FieldType != typeof(string) && f.GetValue(null) as IEnumerable != null).ToList();
-            object community = lollipop_objects.FirstOrDefault(f => f.FieldType == typeof(ProteoformCommunity)).GetValue(null); //Get the instance of community to check for enumerables. If we start making more than one community, we'll have to do this in a foreach.
-            IEnumerable<FieldInfo> community_enumerables = typeof(ProteoformCommunity).GetFields().Where(f => !f.IsLiteral && f.FieldType.IsClass && f.GetValue(community) as IEnumerable != null);
-
-            //write_enumerable_group(typeof(KeyValuePair<string, List<Modification>>), lollipop_enumerables, writer);
-            //write_enumerable_group(typeof(InputFile), lollipop_enumerables, writer);
-            write_enumerable_group(typeof(Component), lollipop_enumerables, writer);
-            //write_enumerable_group(typeof(NeuCodePair), lollipop_enumerables, writer);
-            //write_enumerable_group(typeof(ExperimentalProteoform), community_enumerables, writer);
-            //write_enumerable_group(typeof(TheoreticalProteoform), community_enumerables, writer);
-            //write_enumerable_group(typeof(KeyValuePair<string, TheoreticalProteoform>), community_enumerables, writer);
-            //write_enumerable_group(typeof(ProteoformRelation), lollipop_enumerables, writer);
-            //write_enumerable_group(typeof(KeyValuePair<string, ProteoformRelation>), lollipop_enumerables, writer);
-            //write_enumerable_group(typeof(DeltaMassPeak), community_enumerables, writer);
-            //write_enumerable_group(typeof(ProteoformFamily), community_enumerables, writer);
+            List<FieldInfo> lollipop_objects = typeof(Lollipop).GetFields().Where(f => !f.IsLiteral && f.FieldType.IsClass).Where(f => f.FieldType != typeof(string)).ToList();
+            foreach (FieldInfo f in lollipop_objects)
+            {   
+                if (f.GetValue(null) as IEnumerable != null)
+                    write_enumerable(f, f.GetValue(null), writer);
+                else
+                    write_object(f.FieldType, f.GetValue(null), writer);
+            }
         }
 
         //There might be multiple lists with objects of a certain type, so start write out each of those lists
@@ -189,16 +181,18 @@ namespace ProteoformSuiteInternal
         {
             writer.WriteStartElement("object");
             writer.WriteAttributeString("object_type", type.Name);
-            foreach (FieldInfo field in type.GetFields()) //get all of the fields of this object type
+
+            //Get all of the fields for this object
+            foreach (FieldInfo field in type.GetFields())
             {
                 Type property_type = field.FieldType;
                 string type_name = property_type.Name;
-                string property_name = field.Name;
+                string field_name = field.Name;
                 if (property_type != typeof(string))
                     if (field.GetValue(a) as IEnumerable != null)
                     {
                         writer.WriteStartElement("enumerable");
-                        writer.WriteAttributeString("field_name", property_name);
+                        writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
                         if (field.FieldType == typeof(List<ChargeState>)) write_enumerable(field, field.GetValue(a), writer);
                         else writer.WriteAttributeString("property_value", field.GetValue(a).ToString());
@@ -207,7 +201,7 @@ namespace ProteoformSuiteInternal
                     else if (property_type.IsClass) //If not an enumerable, is it still a class?
                     {
                         writer.WriteStartElement("object");
-                        writer.WriteAttributeString("field_name", property_name);
+                        writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
                         write_object(property_type, field.GetValue(a), writer);
                         writer.WriteEndElement();
@@ -215,33 +209,44 @@ namespace ProteoformSuiteInternal
                     else
                     {
                         writer.WriteStartElement("scalar");
-                        writer.WriteAttributeString("field_name", property_name);
+                        writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
                         writer.WriteAttributeString("field_value", field.GetValue(a).ToString());
                         writer.WriteEndElement();
                     }
             }
-            foreach (PropertyInfo property in type.GetProperties()) //get all of the properties of this object type
+
+            //Get all properties of this object
+            foreach (PropertyInfo property in type.GetProperties())
             {
                 Type property_type = property.PropertyType;
                 string type_name = property_type.Name;
                 string property_name = property.Name;
-                if (property_type != typeof(string))
-                    if (property.GetValue(a) as IEnumerable != null)
+                object property_value;
+                try
+                {
+                    property_value = property.GetValue(a);
+                }
+                catch
+                {
+                    continue;
+                }
+                if (property_type != typeof(string) && property_value as IEnumerable != null)
                 {
                     writer.WriteStartElement("enumerable");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
-                    if (property.PropertyType == typeof(List<ChargeState>)) write_enumerable(property, property.GetValue(a), writer);
-                    else writer.WriteAttributeString("property_value", property.GetValue(a).ToString());
+                    write_enumerable(property, property_value, writer);
+                    //if (property.PropertyType == typeof(List<ChargeState>)) write_enumerable(property, property.GetValue(a), writer);
+                    //else writer.WriteAttributeString("property_value", property.GetValue(a).ToString());
                     writer.WriteEndElement();
                 }
-                else if (property_type.IsClass) //If not an enumerable, is it still a class?
+                else if (property_type.IsClass && property_type != typeof(string)) //If not an enumerable, is it still a class?
                 {
                     writer.WriteStartElement("object");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
-                    write_object(property_type, property.GetValue(a), writer);
+                    write_object(property_type, property_value, writer);
                     writer.WriteEndElement();
                 }
                 else
@@ -249,7 +254,7 @@ namespace ProteoformSuiteInternal
                     writer.WriteStartElement("scalar");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
-                    writer.WriteAttributeString("property_value", property.GetValue(a).ToString());
+                    writer.WriteAttributeString("property_value", property_value.ToString());
                     writer.WriteEndElement();
                 }
             }
