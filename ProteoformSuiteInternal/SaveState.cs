@@ -121,8 +121,10 @@ namespace ProteoformSuiteInternal
 
 
         //FULL SAVE STATE -- this is a start, but not implemented or tested, yet
+        private static Dictionary<Type, List<int>> saved = new Dictionary<Type, List<int>>();
         public static StringBuilder save_all(StringBuilder builder)
         {
+            saved.Clear();
             using (XmlWriter writer = XmlWriter.Create(builder, xmlWriterSettings))
             {
                 initialize_doc(writer);
@@ -179,32 +181,44 @@ namespace ProteoformSuiteInternal
         //For an object in a list, write out the object properties, maintaining the same exclusion list
         private static void write_object(Type type, object a, XmlWriter writer)
         {
+            if (a == null) return;
             writer.WriteStartElement("object");
-            writer.WriteAttributeString("object_type", type.Name);
+            writer.WriteAttributeString("object_type", a.GetType().Name);
+            writer.WriteAttributeString("object_hash", a.GetHashCode().ToString());
 
             //Get all of the fields for this object
             foreach (FieldInfo field in type.GetFields())
             {
-                Type property_type = field.FieldType;
-                string type_name = property_type.Name;
+                Type field_type = field.FieldType;
+                string type_name = field_type.Name;
                 string field_name = field.Name;
-                if (property_type != typeof(string))
-                    if (field.GetValue(a) as IEnumerable != null)
+                object field_value = field.GetValue(a);
+                if (field_type != typeof(string))
+                    if (field_type != typeof(string) && field.GetValue(a) as IEnumerable != null)
                     {
                         writer.WriteStartElement("enumerable");
                         writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
-                        if (field.FieldType == typeof(List<ChargeState>)) write_enumerable(field, field.GetValue(a), writer);
-                        else writer.WriteAttributeString("property_value", field.GetValue(a).ToString());
+                        if (field_type == typeof(List<ChargeState>)) write_enumerable(field, field.GetValue(a), writer);
                         writer.WriteEndElement();
                     }
-                    else if (property_type.IsClass) //If not an enumerable, is it still a class?
+                    else if (field_type.IsClass && saved.Keys.Contains(field_value.GetType()) && saved[field_value.GetType()].Contains(field_value.GetHashCode()))
                     {
                         writer.WriteStartElement("object");
                         writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
-                        write_object(property_type, field.GetValue(a), writer);
+                        writer.WriteAttributeString("field_hash", field.GetValue(a).GetHashCode().ToString());
                         writer.WriteEndElement();
+                    }
+                    else if (field_type.IsClass) //If not an enumerable, is it still a class?
+                    {
+                        writer.WriteStartElement("object");
+                        writer.WriteAttributeString("field_name", field_name);
+                        writer.WriteAttributeString("field_type", type_name);
+                        writer.WriteAttributeString("field_hash", field.GetValue(a).GetHashCode().ToString());
+                        write_object(field_type, field_value, writer);
+                        writer.WriteEndElement();
+                        save_object(field_value);
                     }
                     else
                     {
@@ -241,13 +255,23 @@ namespace ProteoformSuiteInternal
                     //else writer.WriteAttributeString("property_value", property.GetValue(a).ToString());
                     writer.WriteEndElement();
                 }
+                else if (property_type.IsClass && property_type != typeof(string) && saved.Keys.Contains(property_value.GetType()) && saved[property_value.GetType()].Contains(property_value.GetHashCode()))
+                {
+                    writer.WriteStartElement("object");
+                    writer.WriteAttributeString("property_name", property_name);
+                    writer.WriteAttributeString("property_type", type_name);
+                    writer.WriteAttributeString("property_hash", property_value.GetHashCode().ToString());
+                    writer.WriteEndElement();
+                }
                 else if (property_type.IsClass && property_type != typeof(string)) //If not an enumerable, is it still a class?
                 {
                     writer.WriteStartElement("object");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
+                    writer.WriteAttributeString("property_hash", property_value.GetHashCode().ToString());
                     write_object(property_type, property_value, writer);
                     writer.WriteEndElement();
+                    save_object(property_value);
                 }
                 else
                 {
@@ -258,7 +282,15 @@ namespace ProteoformSuiteInternal
                     writer.WriteEndElement();
                 }
             }
+
+            save_object(a);
             writer.WriteEndElement();
+        }
+
+        public static void save_object(object item)
+        {
+            if (saved.Keys.Contains(item.GetType())) saved[item.GetType()].Add(item.GetHashCode());
+            else saved.Add(item.GetType(), new List<int> { item.GetHashCode() });
         }
 
         //OPEN SAVE STATE -- incomplete
