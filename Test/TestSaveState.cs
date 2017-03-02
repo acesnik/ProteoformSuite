@@ -28,7 +28,7 @@ namespace Test
             InputFile noisy = new InputFile(Path.Combine(TestContext.CurrentContext.TestDirectory, "noisy.xlsx"), Labeling.NeuCode, Purpose.Identification);
             Lollipop.input_files.Add(noisy);
 
-            string inFileId = noisy.UniqueId.ToString();
+            string inFileId = noisy.Unique_ID.ToString();
 
             Lollipop.neucode_labeled = true;
             Lollipop.process_raw_components();

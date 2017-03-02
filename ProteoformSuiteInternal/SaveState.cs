@@ -121,7 +121,7 @@ namespace ProteoformSuiteInternal
 
 
         //FULL SAVE STATE -- this is a start, but not implemented or tested, yet
-        private static Dictionary<Type, List<int>> saved = new Dictionary<Type, List<int>>();
+        private static Dictionary<Type, List<long>> saved = new Dictionary<Type, List<long>>();
         public static StringBuilder save_all(StringBuilder builder)
         {
             saved.Clear();
@@ -184,7 +184,8 @@ namespace ProteoformSuiteInternal
             if (a == null) return;
             writer.WriteStartElement("object");
             writer.WriteAttributeString("object_type", a.GetType().Name);
-            writer.WriteAttributeString("object_hash", a.GetHashCode().ToString());
+            long object_ref = a as ICountedInstance != null ? (a as ICountedInstance).Unique_ID : a.GetHashCode();
+            writer.WriteAttributeString("object_hash", object_ref.ToString());
 
             //Get all of the fields for this object
             foreach (FieldInfo field in type.GetFields())
@@ -193,6 +194,7 @@ namespace ProteoformSuiteInternal
                 string type_name = field_type.Name;
                 string field_name = field.Name;
                 object field_value = field.GetValue(a);
+                long field_ref = field_value as ICountedInstance != null ? (field_value as ICountedInstance).Unique_ID : field_value.GetHashCode();
                 if (field_type != typeof(string))
                     if (field_type != typeof(string) && field.GetValue(a) as IEnumerable != null)
                     {
@@ -202,12 +204,12 @@ namespace ProteoformSuiteInternal
                         if (field_type == typeof(List<ChargeState>)) write_enumerable(field, field.GetValue(a), writer);
                         writer.WriteEndElement();
                     }
-                    else if (field_type.IsClass && saved.Keys.Contains(field_value.GetType()) && saved[field_value.GetType()].Contains(field_value.GetHashCode()))
+                    else if (field_type.IsClass && saved.Keys.Contains(field_value.GetType()) && saved[field_value.GetType()].Contains(field_ref))
                     {
                         writer.WriteStartElement("object");
                         writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
-                        writer.WriteAttributeString("field_hash", field.GetValue(a).GetHashCode().ToString());
+                        writer.WriteAttributeString("field_hash", field_ref.ToString());
                         writer.WriteEndElement();
                     }
                     else if (field_type.IsClass) //If not an enumerable, is it still a class?
@@ -215,7 +217,7 @@ namespace ProteoformSuiteInternal
                         writer.WriteStartElement("object");
                         writer.WriteAttributeString("field_name", field_name);
                         writer.WriteAttributeString("field_type", type_name);
-                        writer.WriteAttributeString("field_hash", field.GetValue(a).GetHashCode().ToString());
+                        writer.WriteAttributeString("field_hash", field_ref.ToString());
                         write_object(field_type, field_value, writer);
                         writer.WriteEndElement();
                         save_object(field_value);
@@ -245,6 +247,7 @@ namespace ProteoformSuiteInternal
                 {
                     continue;
                 }
+                long property_ref = property_value as ICountedInstance != null ? (property_value as ICountedInstance).Unique_ID : property_value.GetHashCode();
                 if (property_type != typeof(string) && property_value as IEnumerable != null)
                 {
                     writer.WriteStartElement("enumerable");
@@ -255,12 +258,12 @@ namespace ProteoformSuiteInternal
                     //else writer.WriteAttributeString("property_value", property.GetValue(a).ToString());
                     writer.WriteEndElement();
                 }
-                else if (property_type.IsClass && property_type != typeof(string) && saved.Keys.Contains(property_value.GetType()) && saved[property_value.GetType()].Contains(property_value.GetHashCode()))
+                else if (property_type.IsClass && property_type != typeof(string) && saved.Keys.Contains(property_value.GetType()) && saved[property_value.GetType()].Contains(property_ref))
                 {
                     writer.WriteStartElement("object");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
-                    writer.WriteAttributeString("property_hash", property_value.GetHashCode().ToString());
+                    writer.WriteAttributeString("property_hash", property_ref.ToString());
                     writer.WriteEndElement();
                 }
                 else if (property_type.IsClass && property_type != typeof(string)) //If not an enumerable, is it still a class?
@@ -268,7 +271,7 @@ namespace ProteoformSuiteInternal
                     writer.WriteStartElement("object");
                     writer.WriteAttributeString("property_name", property_name);
                     writer.WriteAttributeString("property_type", type_name);
-                    writer.WriteAttributeString("property_hash", property_value.GetHashCode().ToString());
+                    writer.WriteAttributeString("property_hash", property_ref.ToString());
                     write_object(property_type, property_value, writer);
                     writer.WriteEndElement();
                     save_object(property_value);
@@ -289,8 +292,9 @@ namespace ProteoformSuiteInternal
 
         public static void save_object(object item)
         {
-            if (saved.Keys.Contains(item.GetType())) saved[item.GetType()].Add(item.GetHashCode());
-            else saved.Add(item.GetType(), new List<int> { item.GetHashCode() });
+            long item_ref = item as ICountedInstance != null ? (item as ICountedInstance).Unique_ID : item.GetHashCode();
+            if (saved.Keys.Contains(item.GetType())) saved[item.GetType()].Add(item_ref);
+            else saved.Add(item.GetType(), new List<long> { item_ref });
         }
 
         //OPEN SAVE STATE -- incomplete

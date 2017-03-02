@@ -7,11 +7,14 @@ using System.Linq;
 
 namespace ProteoformSuiteInternal
 {
-    public class Component : IBiorepable
+    public class Component : IBiorepable, ICountedInstance
     {
+        private static long instance_counter;
+
         // PROPERTIES
         public InputFile input_file { get; set; }
         public string id { get; set; } // deconvolution 4.0 assigns a component id. This is made unique by appending the inputFile id.
+        public long Unique_ID { get; set; }
         public double reported_monoisotopic_mass { get; set; }  //from deconvolution 4.0
         public double intensity_reported { get; set; } //from deconvolution 4.0         
         public double intensity_sum_olcs { get; set; } = 0; //intensity sum for overlapping charge states -> determined when grouped into neucode pairs.
@@ -90,13 +93,15 @@ namespace ProteoformSuiteInternal
 
         // CONSTRUCTORS
         public Component()
-        { }
+        {
+            Unique_ID = ++instance_counter;
+        }
 
         public Component(List<string> cellStrings, InputFile input_file) // this is used when we read stored data from previous computation.
         {
             this.id = Convert.ToInt32(cellStrings[0]).ToString();
             this.input_file = input_file;
-            this.id = input_file.UniqueId.ToString() + "_" + Convert.ToInt32(cellStrings[0]);
+            this.id = input_file.Unique_ID.ToString() + "_" + Convert.ToInt32(cellStrings[0]);
             this.reported_monoisotopic_mass = Convert.ToDouble(cellStrings[1]);
             this.weighted_monoisotopic_mass = Convert.ToDouble(cellStrings[1]); // this will get immediately replaced and updated as charge states are added.
             this.intensity_reported = Convert.ToDouble(cellStrings[2]);
@@ -111,6 +116,7 @@ namespace ProteoformSuiteInternal
             this.intensity_sum = Convert.ToDouble(cellStrings[2]); // this needs to be fixed.       
             this.accepted = true;
             this.charge_states = new List<ChargeState>();
+            Unique_ID = ++instance_counter;
         }
 
         public Component(Component c) // To open TSV files with saved Component data and duplicate components
@@ -137,6 +143,7 @@ namespace ProteoformSuiteInternal
             if (c.charge_states.Count > 0) this.charge_states = c.charge_states;
             else this.num_charge_states = c.num_charge_states;
             this.calculate_properties();
+            Unique_ID = ++instance_counter;
         }
 
 
@@ -230,8 +237,10 @@ namespace ProteoformSuiteInternal
         }
     }
 
-    public class ChargeState
+    public class ChargeState : ICountedInstance
     {
+        private static long instance_counter;
+        public long Unique_ID { get; set; }
         public int charge_count { get; set; } //value from deconv 4.0
         public double intensity { get; set; } //value from deconv 4.0
         public double mz_centroid { get; set; } //value from deconv 4.0
@@ -243,6 +252,7 @@ namespace ProteoformSuiteInternal
             this.intensity = Convert.ToDouble(charge_row[1]);
             this.mz_centroid = correct_calculated_mz(Convert.ToDouble(charge_row[2]), mz_correction); //no point to keeping the uncorrected mz if there is a correction.
             this.calculated_mass = correct_calculated_mass();
+            this.Unique_ID = ++instance_counter;
         }
 
         public ChargeState(ChargeState cs)
@@ -251,6 +261,7 @@ namespace ProteoformSuiteInternal
             this.intensity = cs.intensity;
             this.mz_centroid = cs.mz_centroid;
             this.calculated_mass = cs.calculated_mass;
+            this.Unique_ID = ++instance_counter;
         }
 
         //For testing
@@ -260,6 +271,7 @@ namespace ProteoformSuiteInternal
             this.intensity = intensity;
             this.mz_centroid = correct_calculated_mz(mz_centroid, mz_correction);
             this.calculated_mass = correct_calculated_mass();
+            this.Unique_ID = ++instance_counter;
         }
 
         public double correct_calculated_mz(double mz, double mz_correction) // the correction is a linear shift to m/z

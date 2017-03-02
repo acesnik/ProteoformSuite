@@ -19,7 +19,7 @@ namespace Test
             List<string> component1Values = new List<string> { "2", "1000.001", "99.9", "5", "6", "0.02", "88.8", "0.888", "10-15", "11.1-12.2", "10.55" };
             InputFile componentInputFile1 = new InputFile("fake.txt", Purpose.Identification);
             Component createdComponent1 = new Component(component1Values, componentInputFile1);
-            Assert.AreEqual(componentInputFile1.UniqueId + "_2", createdComponent1.id);
+            Assert.AreEqual(componentInputFile1.Unique_ID + "_2", createdComponent1.id);
             Assert.AreEqual(1000.001d, createdComponent1.reported_monoisotopic_mass);
             Assert.AreEqual(99.9d, createdComponent1.intensity_reported);
             Assert.AreEqual(5, createdComponent1.num_charge_states);
@@ -45,7 +45,7 @@ namespace Test
             ChargeState cs1 = new ChargeState(10, 200d, 100d, 0d);//(int charge_count, double intensity, double mz_centroid, double mz_correction)
             createdComponent2.add_charge_state(cs1);
             createdComponent2.calculate_properties();
-            Assert.AreEqual(componentInputFile2.UniqueId + "_2", createdComponent2.id);
+            Assert.AreEqual(componentInputFile2.Unique_ID + "_2", createdComponent2.id);
             Assert.AreEqual(989.9d, createdComponent2.reported_monoisotopic_mass);
             Assert.AreEqual(99.9d, createdComponent2.intensity_reported);
             Assert.AreEqual(200d, createdComponent2.intensity_sum);
@@ -79,7 +79,7 @@ namespace Test
 
             createdComponent3.mergeTheseComponents(createdComponent4);
 
-            Assert.AreEqual(componentInputFile3.UniqueId + "_2", createdComponent3.id);
+            Assert.AreEqual(componentInputFile3.Unique_ID + "_2", createdComponent3.id);
             Assert.AreEqual(989.9d, createdComponent3.reported_monoisotopic_mass);
             Assert.AreEqual(99.9d, createdComponent3.intensity_reported);
             Assert.AreEqual(700d, createdComponent3.intensity_sum);

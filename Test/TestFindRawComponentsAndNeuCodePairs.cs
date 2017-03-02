@@ -26,7 +26,7 @@ namespace Test
             InputFile noisy = new InputFile(Path.Combine(TestContext.CurrentContext.TestDirectory, "noisy.xlsx"), Labeling.NeuCode, Purpose.Identification);
             Lollipop.input_files.Add(noisy);
 
-            string inFileId = noisy.UniqueId.ToString();
+            string inFileId = noisy.Unique_ID.ToString();
 
             Lollipop.neucode_labeled = true;
             Lollipop.process_raw_components();
@@ -40,7 +40,7 @@ namespace Test
             List<int> overlapping_charge_states = c1_charges.Intersect(c2_charges).ToList();
             Assert.AreEqual(9, c1.charge_states.Count);
             Assert.AreEqual(8, overlapping_charge_states.Count);
-            Assert.AreEqual(Lollipop.input_files.Where(f => f.filename == "noisy").FirstOrDefault().UniqueId + "_1", c1.id); //this line behaving strangely.
+            Assert.AreEqual(Lollipop.input_files.Where(f => f.filename == "noisy").FirstOrDefault().Unique_ID + "_1", c1.id); //this line behaving strangely.
             Assert.AreEqual(Math.Round(8982.7258, 4), Math.Round(c1.reported_monoisotopic_mass, 4));
             Assert.AreEqual(Math.Round(32361626.3, 1), Math.Round(c1.intensity_sum, 1));
             Assert.AreEqual(Math.Round(32135853.39, 2), Math.Round(c1.calculate_sum_intensity_olcs(overlapping_charge_states), 2));

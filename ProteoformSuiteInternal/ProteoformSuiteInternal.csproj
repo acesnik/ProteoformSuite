@@ -122,6 +122,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GoTerm.cs" />
     <Compile Include="IBiorepable.cs" />
+    <Compile Include="ICountedInstance.cs" />
     <Compile Include="InputFile.cs" />
     <Compile Include="Lollipop.cs" />
     <Compile Include="Modification.cs" />

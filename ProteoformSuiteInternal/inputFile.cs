@@ -7,18 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProteoformSuiteInternal
 {
-    public class InputFile
+    public class InputFile : ICountedInstance
     {
-        private static int instanceCounter;
-        //private readonly int instanceId;
-        private int instanceId;
-
-        public int UniqueId
-        {
-            get { return this.instanceId; }
-            set { this.instanceId = value; }
-        }
-
+        private static long instance_counter;
+        public long Unique_ID { get; set; }
         public string complete_path { get; set; }
         public string directory { get; set; }
         public string filename { get; set; }
@@ -60,7 +52,7 @@ namespace ProteoformSuiteInternal
         public bool ContaminantDB { get; set; } = false;
 
         //For top-down files
-        public TDProgram td_program { get; set; } = TDProgram.NRTDP;
+        //public TDProgram td_program { get; set; } = TDProgram.NRTDP;
 
         public InputFile(string complete_path, Purpose purpose)
         {
@@ -69,7 +61,7 @@ namespace ProteoformSuiteInternal
             this.filename = Path.GetFileNameWithoutExtension(complete_path);
             this.extension = Path.GetExtension(complete_path);
             this.purpose = purpose;
-            this.instanceId = ++instanceCounter;
+            this.Unique_ID = ++instance_counter;
         }
 
         public InputFile(string completePath, Labeling label, Purpose purpose)
@@ -80,16 +72,16 @@ namespace ProteoformSuiteInternal
             this.extension = Path.GetExtension(completePath);
             this.label = label;
             this.purpose = purpose;
-            this.instanceId = ++instanceCounter;
+            this.Unique_ID = ++instance_counter;
         }
     }
 
     //for TD 
-    public enum TDProgram
-    {
-        ProSight,
-        NRTDP //NU software
-    }
+    //public enum TDProgram
+    //{
+    //    ProSight,
+    //    NRTDP //NU software
+    //}
 
     public enum Purpose
     {
