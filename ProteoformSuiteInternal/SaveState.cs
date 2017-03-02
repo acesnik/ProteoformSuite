@@ -120,7 +120,7 @@ namespace ProteoformSuiteInternal
         }
 
 
-        //FULL SAVE STATE -- this is a start, but not implemented or tested, yet
+        //FULL SAVE STATE -- this is a start, and saving works, but it takes way too long. Need to parallelize construction of XML with XML Linq
         private static Dictionary<Type, List<long>> saved = new Dictionary<Type, List<long>>();
         public static StringBuilder save_all(StringBuilder builder)
         {
@@ -286,7 +286,7 @@ namespace ProteoformSuiteInternal
                 }
             }
 
-            save_object(a);
+            if (!saved.Keys.Contains(a.GetType()) || !saved[a.GetType()].Contains(object_ref)) save_object(a);
             writer.WriteEndElement();
         }
 

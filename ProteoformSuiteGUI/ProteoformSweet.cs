@@ -308,5 +308,17 @@ namespace ProteoformSuite
             }
             else return; 
         }
+
+        private void saveAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            saveDialog.Filter = "Proteoform Suite Save State (*.ps.xml)|*.ps.xlsx";
+            DialogResult dr = this.saveDialog.ShowDialog();
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                SaveState.save_all(saveDialog.FileName);
+                MessageBox.Show("Successfully saved progress.");
+            }
+            else return;
+        }
     }
 }

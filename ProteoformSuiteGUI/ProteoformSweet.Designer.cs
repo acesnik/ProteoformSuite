@@ -126,10 +126,10 @@
             // 
             // saveAllToolStripMenuItem1
             // 
-            this.saveAllToolStripMenuItem1.Enabled = false;
             this.saveAllToolStripMenuItem1.Name = "saveAllToolStripMenuItem1";
             this.saveAllToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
             this.saveAllToolStripMenuItem1.Text = "Save All";
+            this.saveAllToolStripMenuItem1.Click += new System.EventHandler(this.saveAllToolStripMenuItem1_Click);
             // 
             // exportTablesToolStripMenuItem
             // 
