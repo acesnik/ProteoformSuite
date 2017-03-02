@@ -9,6 +9,9 @@ namespace ProteoformSuiteInternal
 {
     public class Component : IBiorepable
     {
+        private static int instanceCounter = 0;
+        public int instanceId;
+
         // PROPERTIES
         public InputFile input_file { get; set; }
         public string id { get; set; } // deconvolution 4.0 assigns a component id. This is made unique by appending the inputFile id.
@@ -90,7 +93,9 @@ namespace ProteoformSuiteInternal
 
         // CONSTRUCTORS
         public Component()
-        { }
+        {
+            instanceId = ++instanceCounter;
+        }
 
         public Component(List<string> cellStrings, InputFile input_file) // this is used when we read stored data from previous computation.
         {
@@ -111,6 +116,7 @@ namespace ProteoformSuiteInternal
             this.intensity_sum = Convert.ToDouble(cellStrings[2]); // this needs to be fixed.       
             this.accepted = true;
             this.charge_states = new List<ChargeState>();
+            instanceId = ++instanceCounter;
         }
 
         public Component(Component c) // To open TSV files with saved Component data and duplicate components
@@ -137,6 +143,7 @@ namespace ProteoformSuiteInternal
             if (c.charge_states.Count > 0) this.charge_states = c.charge_states;
             else this.num_charge_states = c.num_charge_states;
             this.calculate_properties();
+            instanceId = ++instanceCounter;
         }
 
 

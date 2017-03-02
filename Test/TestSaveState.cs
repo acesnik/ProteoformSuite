@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.IO;
 
 namespace Test
 {
@@ -17,25 +18,30 @@ namespace Test
             Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
         }
 
-        //[Test]
-        //public void save_and_load_grouped_components()
-        //{
-        //    //reading in test excel file, process raw components before testing neucode pairs.
-        //    Lollipop.correctionFactors = null;
-        //    Lollipop.raw_experimental_components.Clear();
-        //    Func<InputFile, IEnumerable<Component>> componentReader = c => new ExcelReader().read_components_from_xlsx(c, Lollipop.correctionFactors);
-        //    Lollipop.input_files.Add(new InputFile("UnitTestFiles\\noisy.xlsx", Labeling.NeuCode, Purpose.Identification));
+        [Test]
+        public void save_and_load_grouped_components()
+        {
+            //reading in test excel file, process raw components before testing neucode pairs.
+            Lollipop.correctionFactors = null;
+            Lollipop.raw_experimental_components.Clear();
+            Func<InputFile, IEnumerable<Component>> componentReader = c => new ComponentReader().read_components_from_xlsx(c, Lollipop.correctionFactors);
+            InputFile noisy = new InputFile(Path.Combine(TestContext.CurrentContext.TestDirectory, "noisy.xlsx"), Labeling.NeuCode, Purpose.Identification);
+            Lollipop.input_files.Add(noisy);
 
-        //    string inFileId = Lollipop.input_files[0].UniqueId.ToString();
+            string inFileId = noisy.UniqueId.ToString();
 
-        //    Lollipop.neucode_labeled = true;
-        //    Lollipop.process_raw_components();
-        //    Assert.AreEqual(224, Lollipop.raw_experimental_components.Count);
-        //    Lollipop.raw_experimental_components.Clear();
+            Lollipop.neucode_labeled = true;
+            Lollipop.process_raw_components();
+            Assert.AreEqual(223, Lollipop.raw_experimental_components.Count);
+            int charge_count = Lollipop.raw_experimental_components.SelectMany(c => c.charge_states).Count();
 
-        //    StringBuilder builder = SaveState.save_all();
-        //    SaveState.open_all(builder.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
-        //}
+            string file_path = Path.Combine(TestContext.CurrentContext.TestDirectory, "test_saveAll.xml");
+            SaveState.save_all(file_path);
+            Lollipop.raw_experimental_components.Clear();
+            SaveState.open_all(file_path);
+            Assert.AreEqual(223, Lollipop.raw_experimental_components.Count);
+            Assert.AreEqual(charge_count, Lollipop.raw_experimental_components.SelectMany(c => c.charge_states).Count());
+        }
 
         [Test]
         public void restore_lollipop_settings()
