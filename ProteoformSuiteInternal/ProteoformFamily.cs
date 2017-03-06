@@ -21,15 +21,27 @@ namespace ProteoformSuiteInternal
         public int relation_count { get { return this.relations.Count; } }
         public HashSet<Proteoform> proteoforms { get; set; }
 
-        public ProteoformFamily(IEnumerable<Proteoform> proteoforms, int family_id)
+        public ProteoformFamily(IEnumerable<Proteoform> proteoforms, int family_id, bool merge_experimentals)
         {
             this.family_id = family_id;
             this.proteoforms = new HashSet<Proteoform>(proteoforms);
             HashSet<int> lysine_counts = new HashSet<int>(proteoforms.Select(p => p.lysine_count));
             if (lysine_counts.Count == 1) this.lysine_count = lysine_counts.FirstOrDefault();
-            this.experimental_proteoforms = proteoforms.OfType<ExperimentalProteoform>().ToList();
             this.theoretical_proteoforms = proteoforms.OfType<TheoreticalProteoform>().ToList();
             this.relations = new HashSet<ProteoformRelation>(proteoforms.SelectMany(p => p.relationships.Where(r => r.peak.peak_accepted)), new RelationComparer());
+            if (merge_experimentals)
+            {
+                List<ExperimentalProteoform> experimental_proteoforms = proteoforms.OfType<ExperimentalProteoform>().ToList();
+                Dictionary<double, List<ExperimentalProteoform>> mergers = new Dictionary<double, List<ExperimentalProteoform>>();
+                foreach (ExperimentalProteoform e in experimental_proteoforms)
+                {
+                    if (mergers.Keys.Any(v => e.agg_mass - Lollipop.mass_tolerance >= )
+                }
+            }
+            else
+            {
+                this.experimental_proteoforms = proteoforms.OfType<ExperimentalProteoform>().ToList();
+            }
         }
     }
 

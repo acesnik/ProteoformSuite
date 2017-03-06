@@ -90,6 +90,11 @@ namespace ProteoformSuiteInternal
             }
         }
 
+        public ExperimentalProteoform(List<ExperimentalProteoform> proteoforms_to_merge) : base(String.Join(";", proteoforms_to_merge.Select(p => p.accession)))
+        {
+            quant = new quantitativeValues(this, proteoforms_to_merge.Select(e => e.quant).ToList());
+        }
+
 
         // TESTING CONSTRUCTORS
         public ExperimentalProteoform(string accession) : base(accession)
@@ -312,6 +317,11 @@ namespace ProteoformSuiteInternal
             {
                 eP.quant = this;
                 proteoform = eP;
+            }
+
+            public quantitativeValues(ExperimentalProteoform eP, List<quantitativeValues> values_to_merge)
+            {
+
             }
 
             public void determine_biorep_intensities_and_test_statistics(bool neucode_labeled, List<biorepIntensity> biorepIntensityList, decimal bkgdAverageIntensity, decimal bkgdStDev, string numerator, string denominator, decimal sKnot)

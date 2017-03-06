@@ -468,7 +468,8 @@ namespace ProteoformSuiteInternal
         public static List<Psm> psm_list = new List<Psm>();
 
         public static Dictionary<string, IList<Modification>> uniprotModificationTable = new Dictionary<string, IList<Modification>>();
-        static Dictionary<char, double> aaIsotopeMassList;
+        public static Dictionary<char, double> sample_aaIsotopeMassList;
+        public static Dictionary<char, double> contaminant_aaIsotopeMassList;
 
         public static void get_theoretical_proteoforms()
         {
@@ -484,7 +485,8 @@ namespace ProteoformSuiteInternal
             Dictionary<string, Modification> um;
             theoretical_proteins = get_files(Lollipop.input_files, Purpose.ProteinDatabase).ToDictionary(file => file, file => ProteinDbLoader.LoadProteinXML(file.complete_path, false, all_modifications, file.ContaminantDB, new string[] { "GO" }, out um).ToArray());
             expanded_proteins = expand_protein_entries(theoretical_proteins.Values.SelectMany(p => p).ToArray());
-            aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation, Lollipop.natural_lysine_isotope_abundance, Lollipop.neucode_light_lysine, Lollipop.neucode_heavy_lysine).AA_Masses;
+            sample_aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation, Lollipop.natural_lysine_isotope_abundance, Lollipop.neucode_light_lysine, Lollipop.neucode_heavy_lysine).AA_Masses;
+            sample_aaIsotopeMassList = new AminoAcidMasses(methionine_oxidation, carbamidomethylation, true, false, false).AA_Masses;
             if (combine_identical_sequences) expanded_proteins = group_proteins_by_sequence(expanded_proteins);
 
             //Read the Morpheus BU data into PSM list
@@ -629,10 +631,10 @@ namespace ProteoformSuiteInternal
         private static void EnterTheoreticalProteformFamily(string seq, ProteinWithGoTerms prot, string accession, bool isMetCleaved, List<TheoreticalProteoform> theoretical_proteoforms, int decoy_number)
         {
             //Calculate the properties of this sequence
-            double unmodified_mass = TheoreticalProteoform.CalculateProteoformMass(seq, aaIsotopeMassList);
+            bool check_contaminants = theoretical_proteins.Any(item => item.Key.ContaminantDB);
+            double unmodified_mass = TheoreticalProteoform.CalculateProteoformMass(seq, check_contaminants ? contaminant_aaIsotopeMassList : sample_aaIsotopeMassList);
             int lysine_count = seq.Split('K').Length - 1;
             List<PtmSet> unique_ptm_groups = new PtmCombos(prot.OneBasedPossibleLocalizedModifications).get_combinations(max_ptms);
-            bool check_contaminants = theoretical_proteins.Any(item => item.Key.ContaminantDB);
 
             int listMemberNumber = 1;
 
