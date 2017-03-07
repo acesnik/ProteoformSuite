@@ -266,5 +266,10 @@ namespace ProteoformSuite
             cb_boldLabel.Enabled = cb_buildAsQuantitative.Checked;
             cb_moreOpacity.Enabled = false; //not fully implemented
         }
+
+        private void cb_mergeSameMassExp_CheckedChanged(object sender, EventArgs e)
+        {
+            Lollipop.automatically_merge_experimentals = cb_mergeSameMassExp.Checked;
+        }
     }
 }

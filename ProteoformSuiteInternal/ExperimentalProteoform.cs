@@ -90,6 +90,28 @@ namespace ProteoformSuiteInternal
             }
         }
 
+        public ExperimentalProteoform(List<ExperimentalProteoform> proteoforms_to_merge) : base(String.Join(";", proteoforms_to_merge.Select(p => p.accession)))
+        {
+            this.aggregated_components = proteoforms_to_merge.SelectMany(p => p.aggregated_components).ToList();
+            this.root = this.aggregated_components.OrderByDescending(c => c.intensity_sum_olcs).FirstOrDefault();
+            this.calculate_properties();
+            this.lt_quant_components = proteoforms_to_merge.SelectMany(p => p.lt_quant_components).ToList();
+            this.hv_quant_components = proteoforms_to_merge.SelectMany(p => p.hv_quant_components).ToList();
+            this.lt_verification_components = proteoforms_to_merge.SelectMany(p => p.lt_verification_components).ToList();
+            this.hv_verification_components = proteoforms_to_merge.SelectMany(p => p.hv_verification_components).ToList();
+            foreach (Proteoform p in proteoforms_to_merge)
+            {
+                foreach (ProteoformRelation r in p.relationships)
+                {
+                    if (r.connected_proteoforms[0] == p) r.connected_proteoforms[0] = this;
+                    else r.connected_proteoforms[1] = this;
+                }
+            }
+            this.relationships = new HashSet<ProteoformRelation>(proteoforms_to_merge.SelectMany(p => p.relationships), new RelationComparer()).ToList();
+            this.candidate_relatives = proteoforms_to_merge.SelectMany(p => p.candidate_relatives).Distinct().ToList();
+            quant = new quantitativeValues(this);
+        }
+
 
         // TESTING CONSTRUCTORS
         public ExperimentalProteoform(string accession) : base(accession)

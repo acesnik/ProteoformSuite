@@ -767,6 +767,7 @@ namespace ProteoformSuiteInternal
         public static int deltaM_edge_display_rounding = 2;
         public static string[] node_positioning = new string[] { "Arbitrary Circle", "Mass X-Axis", "Circle by Mass" };
         public static string[] edge_labels = new string[] { "Mass Difference" };
+        public static bool automatically_merge_experimentals = true;
 
 
         //QUANTIFICATION SETUP
