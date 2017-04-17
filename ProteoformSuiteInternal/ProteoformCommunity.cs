@@ -150,7 +150,7 @@ namespace ProteoformSuiteInternal
             List<Thread> active = new List<Thread>();
             while (remaining_relations_outside_no_mans.FirstOrDefault() != null || active.Count > 0)
             {
-                while (root != null && active.Count < Environment.ProcessorCount)
+                while (root != null && active.Count < 1) // Use Environment.ProcessorCount instead of 1 to enable parallization
                 {
                     if (root.relation_type != ProteoformComparison.ExperimentalExperimental && root.relation_type != ProteoformComparison.ExperimentalTheoretical)
                         throw new ArgumentException("Only EE and ET peaks can be accepted");
