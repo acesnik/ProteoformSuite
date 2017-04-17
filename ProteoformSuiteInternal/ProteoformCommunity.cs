@@ -196,7 +196,7 @@ namespace ProteoformSuiteInternal
         {
             return ordered.FirstOrDefault(r =>
                 running.All(s =>
-                    r.delta_mass < s.delta_mass - 10 || r.delta_mass > s.delta_mass + 10));
+                    r.delta_mass < s.delta_mass - 20 || r.delta_mass > s.delta_mass + 20));
         }
 
         public List<DeltaMassPeak> accept_deltaMass_peaks(List<ProteoformRelation> relations, List<ProteoformRelation> false_relations)
