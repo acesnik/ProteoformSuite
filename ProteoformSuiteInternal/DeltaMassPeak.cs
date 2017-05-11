@@ -12,6 +12,7 @@ namespace ProteoformSuiteInternal
         #region Private Fields
 
         private static int instance_counter = 0;
+        private int relation_group_centering_iterations = 2;
 
         #endregion Private Fields
 
@@ -62,8 +63,8 @@ namespace ProteoformSuiteInternal
 
         #region Private Methods
 
-        /*(this needs to be done at the actual time of forming peaks or else the average is wrong so the peak can be formed out
-            of incorrect relations (average shouldn't include relations already grouped into peaks)*/
+        //(this needs to be done at the actual time of forming peaks or else the average is wrong so the peak can be formed out
+        //of incorrect relations (average shouldn't include relations already grouped into peaks)
         private List<ProteoformRelation> find_nearby_relations(List<ProteoformRelation> ungrouped_relations)
         {
             if (ungrouped_relations.Count <= 0)
@@ -72,7 +73,7 @@ namespace ProteoformSuiteInternal
                 return grouped_relations;
             }
 
-            for (int i = 0; i < SaveState.lollipop.relation_group_centering_iterations; i++)
+            for (int i = 0; i < relation_group_centering_iterations; i++)
             {
                 double peak_width_base = ungrouped_relations.First().connected_proteoforms[1] as TheoreticalProteoform != null ?
                     SaveState.lollipop.peak_width_base_et :

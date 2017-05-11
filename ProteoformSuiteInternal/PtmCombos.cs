@@ -56,7 +56,7 @@ namespace ProteoformSuiteInternal
         }
 
         //Generates all combinations of a certain length with unique positions
-        private static IEnumerable<PtmSet> unique_positional_combinations(List<Ptm> all_ptms, int combination_length, Dictionary<double, int> modification_ranks, int added_ptm_penalization)
+        public static IEnumerable<PtmSet> unique_positional_combinations(List<Ptm> all_ptms, int combination_length, Dictionary<double, int> modification_ranks, int added_ptm_penalization)
         {
             Ptm[] result = new Ptm[combination_length];
             int prev_position = -2;

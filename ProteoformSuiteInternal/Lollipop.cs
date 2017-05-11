@@ -514,7 +514,6 @@ namespace ProteoformSuiteInternal
         public double peak_width_base_ee = 0.03;
         public double min_peak_count_et = 5;
         public double min_peak_count_ee = 10;
-        public int relation_group_centering_iterations = 2;  // is this just arbitrary? whys is it specified here?
         public List<ProteoformRelation> et_relations = new List<ProteoformRelation>();
         public List<ProteoformRelation> ee_relations = new List<ProteoformRelation>();
         public Dictionary<string, List<ProteoformRelation>> ed_relations = new Dictionary<string, List<ProteoformRelation>>();
@@ -562,6 +561,8 @@ namespace ProteoformSuiteInternal
 
         public string family_build_folder_path = "";
         public int deltaM_edge_display_rounding = 2;
+        public bool supplement_theoreticals = true;
+
         public static string[] node_positioning = new string[] 
         {
             "Arbitrary Circle",
@@ -569,21 +570,25 @@ namespace ProteoformSuiteInternal
             "Circle by Mass",
             //"Mass X-Axis" 
         };
+
         public static string[] node_labels = new string[] 
         {
             "Experimental ID",
             "Inferred Theoretical ID"
         };
+
         public static string[] edge_labels = new string[] 
         {
             "Mass Difference",
             "Modification IDs (omits edges with null IDs)"
         };
+
         public static List<string> gene_name_labels = new List<string>
         {
             "Primary, e.g. HOG1",
             "Ordered Locus, e.g. YLR113W"
         };
+
         public string[] likely_cleavages = new string[] 
         {
             "I",
@@ -593,8 +598,13 @@ namespace ProteoformSuiteInternal
 
         public void construct_target_and_decoy_families()
         {
+            target_proteoform_community.decoy_database = null;
             target_proteoform_community.construct_families();
-            foreach (var decoys in decoy_proteoform_communities.Values) decoys.construct_families();
+            foreach (var decoy_db in decoy_proteoform_communities)
+            {
+                decoy_db.Value.decoy_database = decoy_db.Key;
+                decoy_db.Value.construct_families();
+            }
         }
 
         #endregion PROTEOFORM FAMILIES Public Fields
@@ -1045,9 +1055,21 @@ namespace ProteoformSuiteInternal
 
         public void clear_all_families()
         {
+            SaveState.lollipop.et_relations.RemoveAll(r => !SaveState.lollipop.target_proteoform_community.theoretical_proteoforms.Contains(r.connected_proteoforms[1]));
             foreach (ProteoformCommunity community in decoy_proteoform_communities.Values.Concat(new List<ProteoformCommunity> { target_proteoform_community }))
             {
                 community.clear_families();
+
+                //Clear out the theoreticals added to illustrate identification
+                foreach (ProteoformFamily f in community.families)
+                {
+                    f.relations.RemoveAll(r => r.connected_proteoforms[1] as TheoreticalProteoform != null && !community.theoretical_proteoforms.Contains(r.connected_proteoforms[1]));
+                }
+
+                foreach (Proteoform p in community.experimental_proteoforms)
+                {
+                    p.relationships.RemoveAll(r => r.connected_proteoforms[1] as TheoreticalProteoform != null && !community.theoretical_proteoforms.Contains(r.connected_proteoforms[1]));
+                }
             }
         }
 

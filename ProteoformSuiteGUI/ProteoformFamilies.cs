@@ -394,6 +394,11 @@ namespace ProteoformSuiteGUI
             SaveState.lollipop.likely_cleavages = tb_likelyCleavages.Text.Split(',');
         }
 
+        private void cb_supplementTheoreticals_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveState.lollipop.supplement_theoreticals = cb_supplementTheoreticals.Checked;
+        }
+
         #endregion Private Methods
 
     }

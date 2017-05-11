@@ -86,6 +86,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.Families_update = new System.Windows.Forms.Button();
+            this.cb_supplementTheoreticals = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -335,6 +336,7 @@
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.cb_supplementTheoreticals);
             this.splitContainer3.Panel2.Controls.Add(this.label13);
             this.splitContainer3.Panel2.Controls.Add(this.label5);
             this.splitContainer3.Panel2.Controls.Add(this.tb_identified_decoys);
@@ -758,6 +760,19 @@
             this.Families_update.UseVisualStyleBackColor = true;
             this.Families_update.Click += new System.EventHandler(this.Families_update_Click);
             // 
+            // cb_supplementTheoreticals
+            // 
+            this.cb_supplementTheoreticals.AutoSize = true;
+            this.cb_supplementTheoreticals.Checked = true;
+            this.cb_supplementTheoreticals.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_supplementTheoreticals.Location = new System.Drawing.Point(301, 64);
+            this.cb_supplementTheoreticals.Name = "cb_supplementTheoreticals";
+            this.cb_supplementTheoreticals.Size = new System.Drawing.Size(197, 17);
+            this.cb_supplementTheoreticals.TabIndex = 67;
+            this.cb_supplementTheoreticals.Text = "Supplement Theoretical Proteoforms";
+            this.cb_supplementTheoreticals.UseVisualStyleBackColor = true;
+            this.cb_supplementTheoreticals.CheckedChanged += new System.EventHandler(this.cb_supplementTheoreticals_CheckedChanged);
+            // 
             // ProteoformFamilies
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -854,5 +869,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tb_identified_decoys;
         private System.Windows.Forms.TextBox tb_identified_experimentals;
+        public System.Windows.Forms.CheckBox cb_supplementTheoreticals;
     }
 }

@@ -50,7 +50,6 @@ namespace ProteoformSuiteInternal
             foreach(ProteoformCommunity community in SaveState.lollipop.decoy_proteoform_communities.Values)
             {
                 community.theoretical_proteoforms = new TheoreticalProteoform[0];
-
             }
             theoretical_proteins.Clear();
 
@@ -339,8 +338,9 @@ namespace ProteoformSuiteInternal
             int ptm_set_counter = 1;
             foreach (PtmSet ptm_set in unique_ptm_groups)
             {
-                lock (theoretical_proteoforms) theoretical_proteoforms.Add(
-                    new TheoreticalProteoform(
+                lock (theoretical_proteoforms)
+                {
+                    theoretical_proteoforms.Add(new TheoreticalProteoform(
                         accession + "_P" + ptm_set_counter.ToString(),
                         prot.FullDescription + "_P" + ptm_set_counter.ToString() + (decoy_number < 0 ? "" : "_DECOY_" + decoy_number.ToString()),
                         new ProteinWithGoTerms[] { prot },
@@ -351,6 +351,7 @@ namespace ProteoformSuiteInternal
                         check_contaminants,
                         theoretical_proteins)
                     );
+                }
                 ptm_set_counter++;
             }
         }

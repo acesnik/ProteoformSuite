@@ -37,8 +37,8 @@ namespace ProteoformSuiteInternal
             this.description = description;
             this.name = String.Join(";", expanded_protein_list.Select(p => p.Name));
             this.fragment = String.Join(";", expanded_protein_list.Select(p => p.ProteolysisProducts.FirstOrDefault().Type));
-            this.begin = (int)expanded_protein_list.FirstOrDefault().ProteolysisProducts.FirstOrDefault().OneBasedBeginPosition;
-            this.end = (int)expanded_protein_list.FirstOrDefault().ProteolysisProducts.FirstOrDefault().OneBasedEndPosition;
+            this.begin = (int)expanded_protein_list.First().ProteolysisProducts.FirstOrDefault().OneBasedBeginPosition;
+            this.end = (int)expanded_protein_list.First().ProteolysisProducts.FirstOrDefault().OneBasedEndPosition;
             this.sequence = expanded_protein_list.First().BaseSequence;
             this.goTerms = expanded_protein_list.SelectMany(p => p.GoTerms).ToList();
             goTerm_IDs = String.Join("; ", goTerms.Select(g => g.Id));

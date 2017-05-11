@@ -19,15 +19,11 @@ namespace ProteoformSuiteInternal
 
         #region Public Properties
 
-        public bool has_e_proteoforms
-        {
-            get { return experimental_proteoforms.Length > 0; }
-        }
+        public string decoy_database { get; set; }
 
-        public bool has_e_and_t_proteoforms
-        {
-            get { return experimental_proteoforms.Length > 0 && theoretical_proteoforms.Length > 0; }
-        }
+        public bool has_e_proteoforms{ get { return experimental_proteoforms.Length > 0; } }
+
+        public bool has_e_and_t_proteoforms { get { return experimental_proteoforms.Length > 0 && theoretical_proteoforms.Length > 0; } }
 
         #endregion
 
@@ -208,7 +204,7 @@ namespace ProteoformSuiteInternal
         public static string preferred_gene_label;
         public List<ProteoformFamily> construct_families()
         {
-            Stack<Proteoform> remaining = new Stack<Proteoform>(this.experimental_proteoforms.Where(e => e.accepted).ToArray());
+            Stack<Proteoform> remaining = new Stack<Proteoform>(experimental_proteoforms.Where(e => e.accepted).ToArray());
             List<ProteoformFamily> running_families = new List<ProteoformFamily>();
             List<Proteoform> running = new List<Proteoform>();
             List<Thread> active = new List<Thread>();
@@ -244,7 +240,7 @@ namespace ProteoformSuiteInternal
                     }
                 }
 
-                this.families.AddRange(running_families);
+                families.AddRange(running_families);
                 remaining = new Stack<Proteoform>(remaining.Except(cumulative_proteoforms));
 
                 running_families.Clear();
@@ -252,7 +248,11 @@ namespace ProteoformSuiteInternal
                 active.Clear();
             }
             if (gene_centric_families) families = combine_gene_families(families).ToList();
-            Parallel.ForEach(families, f => f.identify_experimentals());
+            Parallel.ForEach(families, f =>
+            {
+                f.community = this;
+                f.identify_experimentals();
+            });
             return families;
         }
 
