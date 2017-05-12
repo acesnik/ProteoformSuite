@@ -192,8 +192,6 @@ namespace ProteoformSuiteInternal
                     else SaveState.lollipop.ed_relations[community.decoy_database].Add(et);
                 }
             }
-
-            
         }
 
         #endregion Public Methods
